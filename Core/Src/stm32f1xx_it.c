@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "button.h"
+#include "adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -237,6 +238,25 @@ void EXTI2_IRQHandler(void)
   }
 
   /* USER CODE END EXTI2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel1 global interrupt.
+  */
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+	uint8_t adcChannelCounter = 0;
+
+	while(adcChannelCounter < ENUM_ADC_CHANNEL_COUNT)
+	{
+		adcBuffer[adcChannelCounter] = (q15_t)(((int32_t)(adc1Buffer[adcChannelCounter] - 0) * adcGain[adcChannelCounter]) >> 15);
+		adcChannelCounter++;
+	}
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+	DMA1->IFCR |= DMA_IFCR_CGIF1;
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
 /**

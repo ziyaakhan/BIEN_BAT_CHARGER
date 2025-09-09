@@ -161,5 +161,3 @@ void LCD_PrintUInt8(uint8_t value)
     buf[idx] = '\0';
     LCD_Print(buf);
 }
-
-

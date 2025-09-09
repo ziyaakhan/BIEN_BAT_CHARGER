@@ -18,8 +18,6 @@ Core/Src/button.o: ../Core/Src/button.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dac.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dac_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
@@ -27,7 +25,18 @@ Core/Src/button.o: ../Core/Src/button.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/button.h
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_adc.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_bus.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_cortex.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rcc.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_system.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_utils.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_pwr.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_gpio.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h \
+ ../Middlewares/ST/ARM/DSP/Inc/arm_math.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/button.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -48,8 +57,6 @@ Core/Src/button.o: ../Core/Src/button.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h:
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h:
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dac.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dac_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:
@@ -57,4 +64,16 @@ Core/Src/button.o: ../Core/Src/button.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_adc.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_bus.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_cortex.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rcc.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_system.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_utils.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_pwr.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_gpio.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h:
+../Middlewares/ST/ARM/DSP/Inc/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Core/Inc/button.h:
