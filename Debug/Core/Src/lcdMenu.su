@@ -1,5 +1,5 @@
-../Core/Src/lcdMenu.c:73:6:lcd_menu_init	8	static
-../Core/Src/lcdMenu.c:79:6:lcd_menu_set_page	8	static
-../Core/Src/lcdMenu.c:85:6:lcd_menu_set_language	8	static
-../Core/Src/lcdMenu.c:91:6:lcd_handle	16	static
-../Core/Src/lcdMenu.c:146:6:button_handle	8	static
+../Core/Src/lcdMenu.c:78:6:lcd_menu_init	8	static
+../Core/Src/lcdMenu.c:84:6:lcd_menu_set_page	8	static
+../Core/Src/lcdMenu.c:90:6:lcd_menu_set_language	8	static
+../Core/Src/lcdMenu.c:96:6:lcd_handle	16	static
+../Core/Src/lcdMenu.c:170:6:button_handle	8	static

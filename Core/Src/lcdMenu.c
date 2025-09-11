@@ -15,6 +15,7 @@ uint8_t pageID;
 uint8_t buttonState = 0;
 uint8_t lcdLangId = 0; /* 0: EN, 1: TR */
 static uint8_t prevPageID = 0xFF; /* force first render to clear */
+uint8_t uiNeedsClear = 0;
 
 /* Language tables using pointer-to-pointer (double pointer) style */
 static const char * const strEN_LOADING_LINE0 = "********************";
@@ -70,6 +71,10 @@ static const char * const LABELS_TR[7] = {
 static const char * const MAIN_TITLE_EN = "BIENSIS BAT CHARGER";   /* 19 chars */
 static const char * const MAIN_TITLE_TR = "BIENSIS SARJ CIHAZI";   /* 20 chars */
 
+/* Compact labels per language for tight layout */
+static const char * const LABELS_EN_SHORT[4] = { "I Out:", "V Out:", "Mains:", "Temp:" };
+static const char * const LABELS_TR_SHORT[4] = { "Cikis I:", "Cikis V:", "Sebeke:", "Sic:" };
+
 void lcd_menu_init(void)
 {
 	pageID = PAGE_LOADING;
@@ -90,10 +95,11 @@ void lcd_menu_set_language(uint8_t lang_id)
 
 void lcd_handle(void)
 {
-	/* Clear once when page changes to avoid leftovers */
-	if (pageID != prevPageID) {
+	/* Clear once when page changes or explicitly requested */
+	if (pageID != prevPageID || uiNeedsClear) {
 		LCD_Clear();
 		prevPageID = pageID;
+		uiNeedsClear = 0;
 	}
 
 	switch(pageID)
@@ -111,29 +117,47 @@ void lcd_handle(void)
 	case PAGE_MAIN:
 	{
 		const char * title = (lcdLangId == 0) ? MAIN_TITLE_EN : MAIN_TITLE_TR;
-		const char * const * labels = (lcdLangId == 0) ? LABELS_EN : LABELS_TR;
+		const char * const * labelsShort = (lcdLangId == 0) ? LABELS_EN_SHORT : LABELS_TR_SHORT;
 
-		/* Title */
+		/* Title (row 0) */
 		LCD_SetCursor(0, 0);
 		LCD_Print(title);
 
-		/* Row 1: IDC2 and VBAT */
+		/* Row 1 (index 1): Iout / Cikis I */
 		LCD_SetCursor(0, 1);
-		LCD_Print(labels[3]); /* IDC2 */
-		LCD_PrintUInt16(adcIDC2);
-		LCD_SetCursor(10, 1);
-		LCD_Print(labels[0]); /* VBAT */
-		LCD_PrintUInt16(adcVBAT1);
+		LCD_Print(labelsShort[0]);
+		LCD_PrintUInt16_1dp(adcIDC2);
+		LCD_WriteChar((lcdLangId == 0) ? 'I' : 'A');
 
-		/* Row 2: VAC */
+		/* Row 2 (index 2): Vout / Cikis V */
 		LCD_SetCursor(0, 2);
-		LCD_Print(labels[1]); /* VAC */
-		LCD_PrintUInt16(adcVAC);
+		LCD_Print(labelsShort[1]);
+		LCD_PrintUInt16_1dp(adcVBAT1);
+		LCD_WriteChar('V');
 
-		/* Row 3: TEMP */
+		/* Status moved one row down: right side of row 1 */
+		{
+			uint8_t statusCol = (lcdLangId == 0) ? 15u : 14u; /* TR 'Kapali' 6 char => start at 14 */
+			LCD_SetCursor(statusCol, 1);
+			if (lcdLangId == 0) {
+				LCD_Print((HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET) ? "Open" : "Close");
+			} else {
+				LCD_Print((HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET) ? "Acik" : "Kapali");
+			}
+		}
+
+		/* Row 3: Mains/Sebeke and Temp/Sic split across the line */
 		LCD_SetCursor(0, 3);
-		LCD_Print(labels[6]); /* TEMP */
+		LCD_Print(labelsShort[2]); /* Sebeke/Mains */
+		LCD_PrintUInt16(adcVAC);
+		LCD_WriteChar('V');
+		{
+			uint8_t tempCol = (lcdLangId == 0) ? 11u : 12u; /* TR'de Sic biraz saga */
+			LCD_SetCursor(tempCol, 3);
+		}
+		LCD_Print(labelsShort[3]); /* Temp/Sic */
 		LCD_PrintUInt16(adcTEMP);
+		LCD_WriteChar('C');
 	}
 		break;
 

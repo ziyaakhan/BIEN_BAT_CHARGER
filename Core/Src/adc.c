@@ -37,7 +37,7 @@ int16_t adcGain[ADC1_CHANNEL_COUNT];
 void adc_init(void)
 {
 	adcGain[listVAC]   = 9100;
-	adcGain[listTEMP]  = Q15(1);
+	adcGain[listTEMP]  = 100;
 	adcGain[listIDC]   = 2500;
 	adcGain[listVBAT1] = 2490;
 	adcGain[listVDC1]  = Q15(1);

@@ -49,5 +49,6 @@ void button_handle(void);
 extern uint8_t pageID;
 extern uint8_t buttonState;
 extern uint8_t lcdLangId; /* 0: EN, 1: TR */
+extern uint8_t uiNeedsClear;
 
 #endif /* INC_LCDMENU_H_ */

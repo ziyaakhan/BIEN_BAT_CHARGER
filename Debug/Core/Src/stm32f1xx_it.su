@@ -9,8 +9,8 @@
 ../Core/Src/stm32f1xx_it.c:187:6:SysTick_Handler	8	static
 ../Core/Src/stm32f1xx_it.c:208:6:RCC_IRQHandler	0	static
 ../Core/Src/stm32f1xx_it.c:221:6:EXTI2_IRQHandler	8	static
-../Core/Src/stm32f1xx_it.c:249:6:DMA1_Channel1_IRQHandler	8	static
-../Core/Src/stm32f1xx_it.c:297:6:ADC1_IRQHandler	0	static
-../Core/Src/stm32f1xx_it.c:310:6:TIM3_IRQHandler	8	static
-../Core/Src/stm32f1xx_it.c:324:6:EXTI15_10_IRQHandler	8	static
-../Core/Src/stm32f1xx_it.c:353:6:TIM7_IRQHandler	8	static
+../Core/Src/stm32f1xx_it.c:250:6:DMA1_Channel1_IRQHandler	8	static
+../Core/Src/stm32f1xx_it.c:298:6:ADC1_IRQHandler	0	static
+../Core/Src/stm32f1xx_it.c:311:6:TIM3_IRQHandler	8	static
+../Core/Src/stm32f1xx_it.c:325:6:EXTI15_10_IRQHandler	8	static
+../Core/Src/stm32f1xx_it.c:355:6:TIM7_IRQHandler	8	static

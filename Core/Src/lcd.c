@@ -197,3 +197,36 @@ void LCD_PrintInt16(int16_t value)
     }
     LCD_PrintUInt16((uint16_t)value);
 }
+
+void LCD_PrintUInt16_1dp(uint16_t value_times_10)
+{
+    uint16_t integer = value_times_10 / 10u;
+    uint16_t frac = value_times_10 % 10u;
+    /* Pad to fixed width 4: " 9.0" or "19.4" */
+    if (integer < 10u) {
+        LCD_WriteChar(' ');
+    }
+    LCD_PrintUInt16(integer);
+    LCD_WriteChar('.');
+    LCD_WriteChar((char)('0' + frac));
+}
+
+void LCD_PrintUInt8_2d(uint8_t value)
+{
+    if (value < 10u) {
+        LCD_WriteChar('0');
+        LCD_WriteChar((char)('0' + value));
+    } else if (value < 100u) {
+        char buf[3];
+        int idx = 0;
+        if (value >= 10u) {
+            buf[idx++] = (char)('0' + (value / 10u));
+            value = (uint8_t)(value % 10u);
+        }
+        buf[idx++] = (char)('0' + value);
+        buf[idx] = '\0';
+        LCD_Print(buf);
+    } else {
+        LCD_Print("99");
+    }
+}

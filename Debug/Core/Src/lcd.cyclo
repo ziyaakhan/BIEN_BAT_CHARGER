@@ -14,3 +14,5 @@
 ../Core/Src/lcd.c:145:6:LCD_PrintUInt8	4
 ../Core/Src/lcd.c:165:6:LCD_PrintUInt16	5
 ../Core/Src/lcd.c:192:6:LCD_PrintInt16	2
+../Core/Src/lcd.c:201:6:LCD_PrintUInt16_1dp	2
+../Core/Src/lcd.c:214:6:LCD_PrintUInt8_2d	3

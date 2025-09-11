@@ -23,6 +23,8 @@ void LCD_WriteChar(char c);
 void LCD_PrintUInt8(uint8_t value);
 void LCD_PrintUInt16(uint16_t value);
 void LCD_PrintInt16(int16_t value);
+void LCD_PrintUInt16_1dp(uint16_t value_times_10);
+void LCD_PrintUInt8_2d(uint8_t value);
 
 /* Optional helpers */
 void LCD_DisplayOn(void);
