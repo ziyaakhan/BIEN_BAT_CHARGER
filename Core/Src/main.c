@@ -22,8 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
-#include "button.h"
 #include "adc.h"
+#include "lcdMenu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,10 +47,15 @@ DAC_HandleTypeDef hdac;
 
 I2C_HandleTypeDef hi2c1;
 
+TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim7;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+uint16_t dacValueV = 3000;
+uint16_t dacValueI = 1000;
+uint8_t mainCounter = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,6 +66,8 @@ static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -104,17 +111,14 @@ int main(void)
   MX_DAC_Init();
   MX_I2C1_Init();
   MX_USART1_UART_Init();
+  MX_TIM3_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   adc_init();
-
+  HAL_TIM_Base_Start(&htim3);
 
   LCD_Backlight(1);
   LCD_Init();
-  LCD_SetCursor(3, 0);
-  LCD_Print("BAT_CHARGER");
-  LCD_SetCursor(3, 3);
-  LCD_Print("JHD204A READY");
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -124,21 +128,68 @@ int main(void)
 
   HAL_GPIO_WritePin(LCD_BL_GPIO_Port,LCD_BL_Pin, 0);
   HAL_GPIO_WritePin(SHUTDOWN1_GPIO_Port, SHUTDOWN1_Pin, 0);
-  HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, 1);
+  HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, 0);
 
   HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 3000);
 
+  pageID = 0;
+  lcd_handle();
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
   HAL_Delay(250);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 0);
+  HAL_Delay(2500);
+  pageID = 1;
   while (1)
   {
-	  LCD_Clear();
-	  LCD_SetCursor(3, 2);
-	  LCD_PrintUInt8(buttonState);
+	  switch(mainCounter)
+	  {
+	  case 0:
+		  adcTEMP = adcMeanSum[listTEMP - 1] >> SAMPLE_2N ;
+		  mainCounter++;
+		  break;
+	  case 1:
+		  adcIDC = adcMeanSum[listIDC - 1] >> SAMPLE_2N ;
+		  mainCounter++;
+		  break;
+	  case 2:
+		  adcVBAT1 = adcMeanSum[listVBAT1 - 1] >> SAMPLE_2N ;
+		  mainCounter++;
+		  break;
+	  case 3:
+		  adcVDC1 = adcMeanSum[listVDC1 - 1] >> SAMPLE_2N ;
+		  mainCounter++;
+		  break;
+	  case 4:
+		  adcVDC2 = adcMeanSum[listVDC2 - 1] >> SAMPLE_2N ;
+		  mainCounter++;
+		  break;
+	  case 5:
+		  adcIDC2 = adcMeanSum[listIDC2 - 1] >> SAMPLE_2N ;
+		  mainCounter++;
+		  break;
+	  case 6:
+		  adcVAC = sqrt((double) (adcRmsSum / N_VALUE) );
+		  mainCounter++;
+		  break;
+	  case 7:
+		  lcd_handle();
+		  mainCounter++;
+		  break;
+	  case 8:
+		  button_handle();
+		  mainCounter++;
+		  break;
+	  default:
+		  mainCounter = 0;
+		  break;
+	  }
+
+	  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
+	  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dacValueI);
+
+
 	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	  HAL_Delay(1000);
+	 // HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -252,6 +303,10 @@ static void MX_ADC1_Init(void)
 
   LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MDATAALIGN_HALFWORD);
 
+  /* ADC1 interrupt Init */
+  NVIC_SetPriority(ADC1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(ADC1_IRQn);
+
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
@@ -261,10 +316,10 @@ static void MX_ADC1_Init(void)
   ADC_InitStruct.DataAlignment = LL_ADC_DATA_ALIGN_RIGHT;
   ADC_InitStruct.SequencersScanMode = LL_ADC_SEQ_SCAN_ENABLE;
   LL_ADC_Init(ADC1, &ADC_InitStruct);
-  ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_SOFTWARE;
+  ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_EXT_TIM3_TRGO;
   ADC_REG_InitStruct.SequencerLength = LL_ADC_REG_SEQ_SCAN_ENABLE_7RANKS;
   ADC_REG_InitStruct.SequencerDiscont = LL_ADC_REG_SEQ_DISCONT_DISABLE;
-  ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_CONTINUOUS;
+  ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
   ADC_REG_InitStruct.DMATransfer = LL_ADC_REG_DMA_TRANSFER_UNLIMITED;
   LL_ADC_REG_Init(ADC1, &ADC_REG_InitStruct);
 
@@ -386,6 +441,89 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 23;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 999;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 239;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 9999;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 

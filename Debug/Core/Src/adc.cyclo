@@ -1,16 +1,1 @@
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_adc.h:1618:26:LL_ADC_DMA_GetRegAddr	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_adc.h:3244:22:LL_ADC_Enable	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_adc.h:3326:22:LL_ADC_REG_StartConversionSWStart	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:453:22:LL_DMA_EnableChannel	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:472:22:LL_DMA_DisableChannel	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:552:22:LL_DMA_SetDataTransferDirection	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:601:22:LL_DMA_SetMode	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:646:22:LL_DMA_SetPeriphIncMode	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:691:22:LL_DMA_SetMemoryIncMode	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:737:22:LL_DMA_SetPeriphSize	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:784:22:LL_DMA_SetMemorySize	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:879:22:LL_DMA_SetDataLength	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:964:22:LL_DMA_SetMemoryAddress	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:986:22:LL_DMA_SetPeriphAddress	1
-../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h:1761:22:LL_DMA_EnableIT_TC	1
-../Core/Src/adc.c:36:6:adc_init	2
+../Core/Src/adc.c:37:6:adc_init	3

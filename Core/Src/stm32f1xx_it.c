@@ -22,8 +22,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "button.h"
 #include "adc.h"
+#include "lcdMenu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +57,8 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim7;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -227,14 +228,16 @@ void EXTI2_IRQHandler(void)
   {
     uint32_t idr = GPIOB->IDR;
     uint8_t s = (uint8_t)(
-        ((!!(idr & B1_Pin)) << BUT1) |
-        ((!!(idr & B2_Pin)) << BUT2) |
-        ((!!(idr & B3_Pin)) << BUT3) |
-        ((!!(idr & B4_Pin)) << BUT4) |
-        ((!!(idr & B5_Pin)) << BUT5) |
-        ((!!(idr & B6_Pin)) << BUT6)
+        ((!!(idr & B1_Pin)) << BUT_LEFT_POS)  |
+        ((!!(idr & B2_Pin)) << BUT_ON_POS)    |
+        ((!!(idr & B3_Pin)) << BUT_UP_POS)    |
+        ((!!(idr & B4_Pin)) << BUT_DOWN_POS)  |
+        ((!!(idr & B5_Pin)) << BUT_RIGHT_POS) |
+        ((!!(idr & B6_Pin)) << BUT_OFF_POS)
     );
     buttonState = s;
+    HAL_TIM_Base_Start_IT(&htim7); // IT = interrupt
+	HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
   }
 
   /* USER CODE END EXTI2_IRQn 1 */
@@ -247,16 +250,72 @@ void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 	uint8_t adcChannelCounter = 0;
+	uint16_t dcOffset = 1985;
+
+	adcBuffer[adcChannelCounter] = (q15_t)(((int32_t)(adc1Buffer[adcChannelCounter] - dcOffset)
+			* adcGain[adcChannelCounter]) >> 15);
+	adcChannelCounter++;
 
 	while(adcChannelCounter < ENUM_ADC_CHANNEL_COUNT)
 	{
-		adcBuffer[adcChannelCounter] = (q15_t)(((int32_t)(adc1Buffer[adcChannelCounter] - 0) * adcGain[adcChannelCounter]) >> 15);
+		adcBuffer[adcChannelCounter] = (q15_t)(((int32_t)(adc1Buffer[adcChannelCounter]) * adcGain[adcChannelCounter]) >> 15);
 		adcChannelCounter++;
 	}
+	adcChannelCounter = 1;
+	while(adcChannelCounter < ENUM_ADC_CHANNEL_COUNT)
+	{
+		adcMeanSum[adcChannelCounter - 1] = adcMeanSum[adcChannelCounter - 1] - adcMeanBuffer[adcChannelCounter - 1][adcMeanBufferPo];
+		adcMeanBuffer[adcChannelCounter - 1][adcMeanBufferPo] = adcBuffer[adcChannelCounter];
+		adcMeanSum[adcChannelCounter - 1] = adcMeanSum[adcChannelCounter - 1] + adcMeanBuffer[adcChannelCounter - 1][adcMeanBufferPo];
+		adcChannelCounter++;
+	}
+
+	adcMeanBufferPo++;
+	if (adcMeanBufferPo >= ADC_MEAN_BUFFER_SIZE)
+	{
+		adcMeanBufferPo = 0;
+	}
+
+	adcRmsSum = adcRmsSum - adcRmsBuffer[adcRmsBufferPo];
+    adcRmsBuffer[adcRmsBufferPo] = (int32_t)adcBuffer[listVAC] * (int32_t)adcBuffer[listVAC];
+	adcRmsSum = adcRmsSum + adcRmsBuffer[adcRmsBufferPo];
+	adcRmsBufferPo++;
+	if (adcRmsBufferPo >= ADC_RMS_BUFFER_SIZE)
+	{
+		adcRmsBufferPo = 0;
+	}
+
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
 	DMA1->IFCR |= DMA_IFCR_CGIF1;
   /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles ADC1 global interrupt.
+  */
+void ADC1_IRQHandler(void)
+{
+  /* USER CODE BEGIN ADC1_IRQn 0 */
+
+  /* USER CODE END ADC1_IRQn 0 */
+  /* USER CODE BEGIN ADC1_IRQn 1 */
+
+  /* USER CODE END ADC1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
 }
 
 /**
@@ -273,20 +332,33 @@ void EXTI15_10_IRQHandler(void)
   HAL_GPIO_EXTI_IRQHandler(B2_Pin);
   HAL_GPIO_EXTI_IRQHandler(B3_Pin);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-  {
     uint32_t idr = GPIOB->IDR;
     uint8_t s = (uint8_t)(
-        ((!!(idr & B1_Pin)) << BUT1) |
-        ((!!(idr & B2_Pin)) << BUT2) |
-        ((!!(idr & B3_Pin)) << BUT3) |
-        ((!!(idr & B4_Pin)) << BUT4) |
-        ((!!(idr & B5_Pin)) << BUT5) |
-        ((!!(idr & B6_Pin)) << BUT6)
+        ((!!(idr & B1_Pin)) << BUT_LEFT_POS)  |
+        ((!!(idr & B2_Pin)) << BUT_ON_POS)    |
+        ((!!(idr & B3_Pin)) << BUT_UP_POS)    |
+        ((!!(idr & B4_Pin)) << BUT_DOWN_POS)  |
+        ((!!(idr & B5_Pin)) << BUT_RIGHT_POS) |
+        ((!!(idr & B6_Pin)) << BUT_OFF_POS)
     );
     buttonState = s;
-  }
-
+    HAL_TIM_Base_Start_IT(&htim7); // IT = interrupt
+	HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
   /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM7 global interrupt.
+  */
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+	HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 0);
+  /* USER CODE END TIM7_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim7);
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+
+  /* USER CODE END TIM7_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

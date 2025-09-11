@@ -21,6 +21,8 @@ void LCD_Print(const char *str);
 void LCD_PrintN(const char *str, uint16_t max_len);
 void LCD_WriteChar(char c);
 void LCD_PrintUInt8(uint8_t value);
+void LCD_PrintUInt16(uint16_t value);
+void LCD_PrintInt16(int16_t value);
 
 /* Optional helpers */
 void LCD_DisplayOn(void);

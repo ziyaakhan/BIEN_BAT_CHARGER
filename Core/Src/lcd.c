@@ -161,3 +161,39 @@ void LCD_PrintUInt8(uint8_t value)
     buf[idx] = '\0';
     LCD_Print(buf);
 }
+
+void LCD_PrintUInt16(uint16_t value)
+{
+    char buf[6]; /* max 65535 */
+    int idx = 0;
+    
+    /* Handle thousands */
+    if (value >= 10000) {
+        buf[idx++] = (char)('0' + (value / 10000));
+        value = (uint16_t)(value % 10000);
+    }
+    if (value >= 1000) {
+        buf[idx++] = (char)('0' + (value / 1000));
+        value = (uint16_t)(value % 1000);
+    }
+    if (value >= 100) {
+        buf[idx++] = (char)('0' + (value / 100));
+        value = (uint16_t)(value % 100);
+    }
+    if (value >= 10) {
+        buf[idx++] = (char)('0' + (value / 10));
+        value = (uint16_t)(value % 10);
+    }
+    buf[idx++] = (char)('0' + value);
+    buf[idx] = '\0';
+    LCD_Print(buf);
+}
+
+void LCD_PrintInt16(int16_t value)
+{
+    if (value < 0) {
+        LCD_WriteChar('-');
+        value = (int16_t)(-value);
+    }
+    LCD_PrintUInt16((uint16_t)value);
+}
