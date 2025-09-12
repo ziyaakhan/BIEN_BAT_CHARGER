@@ -1,5 +1,6 @@
-../Core/Src/lcdMenu.c:78:6:lcd_menu_init	1
-../Core/Src/lcdMenu.c:84:6:lcd_menu_set_page	1
-../Core/Src/lcdMenu.c:90:6:lcd_menu_set_language	1
-../Core/Src/lcdMenu.c:96:6:lcd_handle	6
-../Core/Src/lcdMenu.c:170:6:button_handle	9
+../Core/Src/lcdMenu.c:191:13:ui_assign_language	1
+../Core/Src/lcdMenu.c:227:6:lcd_menu_init	1
+../Core/Src/lcdMenu.c:237:6:lcd_menu_set_page	1
+../Core/Src/lcdMenu.c:246:6:lcd_menu_set_language	1
+../Core/Src/lcdMenu.c:260:6:lcd_handle	107
+../Core/Src/lcdMenu.c:877:6:button_handle	145

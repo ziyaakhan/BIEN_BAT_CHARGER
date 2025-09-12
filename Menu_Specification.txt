@@ -1,0 +1,105 @@
+Cihaz Menü Tanımı
+Genel Kurallar
+
+Loading (Yükleniyor) Sayfası ve Ana Menü her zaman sabit olacak.
+
+Butonlar:
+
+Sağ Buton (→ / Right Button) = Menüye gir / seçim yap.
+
+Sol Buton (← / Left Button) = Geri çık.
+
+ON/OFF Butonu = Cihazı aç/kapat (her yerde sabit görev).
+
+LCD Ekran:
+
+Alt menülere girildiğinde ekranın en üstünde hangi sayfada olunduğu yazacak.
+
+Dil seçimine göre menü başlıkları Türkçe veya İngilizce gösterilecek.
+
+Ana Menü (Main Menu)
+
+Cihaz açıldığında:
+
+Yükleniyor / Loading ekranı
+
+Ana Menü / Main Menu
+
+Ana menüde sağ butona basıldığında Menü Sayfası / Menu Page açılır.
+
+Menü Sayfası (Menu Page) Seçenekleri
+
+Verileri Gir / Enter Data
+
+Çıkış Kontrol / Output Control
+
+Çalışma Modu / Operating Mode
+
+Ayarlar / Settings
+
+Menü 1: Verileri Gir (Enter Data) – Şarj Cihazı Modu (Charger Mode)
+
+Akü Voltajı / Battery Voltage = Seçenekler: 12V, 24V → battery_voltage
+
+Akü Kapasitesi / Battery Capacity = Ayarlanabilir (↑ arttır, ↓ azalt, uzun bas = hızlı arttırma) → battery_capacity
+
+Akü Sayısı / Battery Count = Ayarlanabilir (↑ arttır, ↓ azalt, uzun bas = hızlı arttırma) → battery_count
+
+Güvenli Şarj / Safe Charge = Açık – Kapalı → safe_charge
+
+Soft Şarj / Soft Charge = Açık – Kapalı → soft_charge
+
+Voltaj Eşitleme / Voltage Equalization = Açık – Kapalı → voltage_equalization
+
+Menü 2: Çıkış Kontrol (Output Control) – Şarj Cihazı Modu
+
+Test Voltajı / Test Voltage = Ayarlanabilir → test_voltage
+
+Test Akım / Test Current = Ayarlanabilir → test_current
+
+Menü 3: Çalışma Modu (Operating Mode)
+
+Seçenekler:
+
+Akü Şarj / Battery Charger
+
+Güç Kaynağı / Power Supply
+
+Eğer Akü Şarj seçilirse → Menü Şarj Cihazı Modunda çalışır.
+
+Eğer Güç Kaynağı seçilirse → Menü Güç Kaynağı Moduna geçer.
+
+Loading ve Main Page yazıları “Şarj Cihazı / Charger” yerine “Güç Kaynağı / Power Supply” olur.
+
+Menü yapısı aşağıda anlatıldığı şekilde değişir.
+
+Menü 4: Ayarlar (Settings)
+
+Alt menüler:
+
+Dil / Language → Seçenekler: Türkçe / English → language
+
+Parlaklık / Brightness → 0–100 arası sayı → brightness
+
+Üretici Menüsü / Manufacturer Menu
+
+Şifre ister (default = 0000).
+
+Doğru şifre girilirse açılır (şimdilik boş).
+
+Güç Kaynağı Modu (Power Supply Mode)
+Menü 1: Verileri Gir (Enter Data)
+
+Çıkış V Set / Output V Set = Ayarlanabilir (0V – 24V) → output_voltage_set
+
+Çıkış I Max / Output I Max = Ayarlanabilir (0A – 40A) → output_current_max
+
+Menü 2: Çıkış Kontrol (Output Control)
+
+Sadece: Kısa Devre Testi / Short Circuit Test → short_circuit_test
+
+Diğer Menüler
+
+Çalışma Modu (Operating Mode) ve Ayarlar (Settings) aynı kalır.
+
+Loading ve Main Page’de yazı Güç Kaynağı / Power Supply olarak değişir.

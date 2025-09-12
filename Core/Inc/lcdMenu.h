@@ -1,8 +1,9 @@
-/*
- * lcdMenu.h
- *
- *  Created on: Sep 11, 2025
- *      Author: Ziya
+/**
+ * @file lcdMenu.h
+ * @brief LCD Menu System for Battery Charger
+ * @details Provides menu navigation, language support, and button handling
+ * @author Ziya
+ * @date 2025
  */
 
 #ifndef INC_LCDMENU_H_
@@ -10,45 +11,141 @@
 
 #include <stdint.h>
 
-/* Button bit positions (readability) */
-#define BUT_LEFT_POS   0
-#define BUT_ON_POS     1
-#define BUT_UP_POS     2
-#define BUT_DOWN_POS   3
-#define BUT_RIGHT_POS  4
-#define BUT_OFF_POS    5
+/** @name Button Bit Positions
+ * @brief Button positions in buttonState bitfield for readability
+ */
+/**@{*/
+#define BUT_LEFT_POS   0  /**< Left button bit position */
+#define BUT_ON_POS     1  /**< On button bit position */
+#define BUT_UP_POS     2  /**< Up button bit position */
+#define BUT_DOWN_POS   3  /**< Down button bit position */
+#define BUT_RIGHT_POS  4  /**< Right button bit position */
+#define BUT_OFF_POS    5  /**< Off button bit position */
+/**@}*/
 
-/* Button masks */
-#define BUT_LEFT_M   (1U << BUT_LEFT_POS)
-#define BUT_ON_M     (1U << BUT_ON_POS)
-#define BUT_UP_M     (1U << BUT_UP_POS)
-#define BUT_DOWN_M   (1U << BUT_DOWN_POS)
-#define BUT_RIGHT_M  (1U << BUT_RIGHT_POS)
-#define BUT_OFF_M    (1U << BUT_OFF_POS)
+/** @name Button Masks
+ * @brief Button masks for checking buttonState
+ */
+/**@{*/
+#define BUT_LEFT_M   (1U << BUT_LEFT_POS)   /**< Left button mask */
+#define BUT_ON_M     (1U << BUT_ON_POS)     /**< On button mask */
+#define BUT_UP_M     (1U << BUT_UP_POS)     /**< Up button mask */
+#define BUT_DOWN_M   (1U << BUT_DOWN_POS)   /**< Down button mask */
+#define BUT_RIGHT_M  (1U << BUT_RIGHT_POS)  /**< Right button mask */
+#define BUT_OFF_M    (1U << BUT_OFF_POS)    /**< Off button mask */
+/**@}*/
 
-/* Optional compatibility aliases (remove if not needed elsewhere) */
-#define BUT1_M BUT_LEFT_M
-#define BUT2_M BUT_ON_M
-#define BUT3_M BUT_UP_M
-#define BUT4_M BUT_DOWN_M
-#define BUT5_M BUT_RIGHT_M
-#define BUT6_M BUT_OFF_M
+/** @name Compatibility Aliases
+ * @brief Legacy button masks for backward compatibility
+ */
+/**@{*/
+#define BUT1_M BUT_LEFT_M   /**< Legacy button 1 mask */
+#define BUT2_M BUT_ON_M     /**< Legacy button 2 mask */
+#define BUT3_M BUT_UP_M     /**< Legacy button 3 mask */
+#define BUT4_M BUT_DOWN_M   /**< Legacy button 4 mask */
+#define BUT5_M BUT_RIGHT_M  /**< Legacy button 5 mask */
+#define BUT6_M BUT_OFF_M    /**< Legacy button 6 mask */
+/**@}*/
 
-/* Pages */
-#define PAGE_LOADING 0
-#define PAGE_MAIN    1
+/** @name Page Definitions
+ * @brief Available menu pages
+ */
+/**@{*/
+#define PAGE_LOADING 0  /**< Loading/splash screen page */
+#define PAGE_MAIN    1  /**< Main display page with measurements */
+#define PAGE_MENU    2  /**< Menu page with selectable items */
+#define PAGE_ENTER_DATA     3  /**< Enter Data page */
+#define PAGE_OUTPUT_CONTROL 4  /**< Output Control page */
+#define PAGE_OPERATING_MODE 5  /**< Operating Mode selection page */
+#define PAGE_SETTINGS       6  /**< Settings page */
+#define PAGE_MFG_PIN        7  /**< Manufacturer PIN entry page */
+#define PAGE_MFG_MENU       8  /**< Manufacturer menu page */
+/**@}*/
 
-/* Public API */
+/**
+ * @brief Operating modes
+ */
+typedef enum {
+    MODE_CHARGER = 0,  /**< Battery Charger mode */
+    MODE_SUPPLY  = 1   /**< Power Supply mode */
+} OperatingMode;
+
+/**
+ * @brief Initialize the LCD menu system
+ * @details Sets up initial page and clears display
+ */
 void lcd_menu_init(void);
+
+/**
+ * @brief Set the current menu page
+ * @param page Page ID (PAGE_LOADING or PAGE_MAIN)
+ */
 void lcd_menu_set_page(uint8_t page);
-void lcd_menu_set_language(uint8_t lang_id); /* 0: EN, 1: TR */
+
+/**
+ * @brief Set the display language
+ * @param lang_id Language ID (0: English, 1: Turkish)
+ */
+void lcd_menu_set_language(uint8_t lang_id);
+
+/**
+ * @brief Handle LCD display rendering
+ * @details Renders the current page based on pageID and language
+ */
 void lcd_handle(void);
+
+/**
+ * @brief Handle button press events
+ * @details Processes buttonState and performs corresponding actions
+ */
 void button_handle(void);
 
-/* Shared state */
-extern uint8_t pageID;
-extern uint8_t buttonState;
-extern uint8_t lcdLangId; /* 0: EN, 1: TR */
-extern uint8_t uiNeedsClear;
+/** @name Shared State Variables
+ * @brief Global state variables for menu system
+ */
+/**@{*/
+extern uint8_t pageID;        /**< Current page ID */
+extern uint8_t buttonState;   /**< Button state bitfield */
+extern uint8_t lcdLangId;     /**< Language ID (0: EN, 1: TR) */
+extern uint8_t uiNeedsClear;  /**< UI refresh flag */
+extern OperatingMode operatingMode; /**< Current operating mode */
+extern uint8_t menuIndex;           /**< Current menu selection index */
+extern uint8_t subIndex;            /**< Current subpage selection index */
+extern const char * companyName;    /**< Company name shown on loading/title */
+
+/**
+ * @brief Device names per language and mode (pointer-to-pointer)
+ * @details Access as DEVICE_NAMES_LANG[lcdLangId][operatingMode]
+ */
+extern const char * const * DEVICE_NAMES_LANG[2];
+extern const char * const DEVICE_NAMES_EN[2];
+extern const char * const DEVICE_NAMES_TR[2];
+
+/**
+ * @brief Short title names per language and mode for main title (<= 20 chars with company)
+ * @details Access as TITLE_NAMES_LANG[lcdLangId][operatingMode]
+ */
+extern const char * const * TITLE_NAMES_LANG[2];
+extern const char * const TITLE_NAMES_EN[2];
+extern const char * const TITLE_NAMES_TR[2];
+
+/* Parameters per specification */
+extern uint8_t batteryVoltageSel;    /**< 0:12V, 1:24V */
+extern uint16_t batteryCapacityAh;   /**< Adjustable 1..999 */
+extern uint8_t batteryCount;         /**< Adjustable 1..24 */
+extern uint8_t safeChargeOn;         /**< 0/1 */
+extern uint8_t softChargeOn;         /**< 0/1 */
+extern uint8_t voltageEqualOn;       /**< 0/1 */
+extern uint16_t testVoltage_dV;      /**< Test voltage in decivolts (0..240) */
+extern uint16_t testCurrent_dA;      /**< Test current in deciampere (0..400) */
+extern uint16_t outputVSet_dV;       /**< Supply: output voltage set (0..240 dV) */
+extern uint16_t outputIMax_dA;       /**< Supply: output current max (0..400 dA) */
+extern uint8_t shortCircuitTest;     /**< Supply: short circuit test trigger 0/1 */
+extern uint8_t brightness;           /**< 0..100 */
+extern uint16_t mfgPinCode;          /**< Manufacturer PIN (default 0000) */
+extern uint8_t mfgPinInput[4];       /**< Current PIN entry digits */
+extern uint8_t mfgPinPos;            /**< Current cursor pos 0..3 for PIN */
+extern uint8_t mfgPinError;          /**< Last PIN state: 1 wrong */
+/**@}*/
 
 #endif /* INC_LCDMENU_H_ */
