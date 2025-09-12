@@ -13,7 +13,6 @@ int16_t adcBuffer[ADC1_CHANNEL_COUNT];
 
 // ADC MEAN VAR
 
-q15_t adcMean[ADC_MEAN_CHANNEL_COUNT];
 q15_t adcMeanBuffer[ADC1_CHANNEL_COUNT][ADC_MEAN_BUFFER_SIZE];
 int32_t adcMeanSum[ADC_MEAN_CHANNEL_COUNT];
 uint8_t adcMeanBufferPo = 0;

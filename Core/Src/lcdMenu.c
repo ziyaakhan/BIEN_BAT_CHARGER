@@ -11,6 +11,7 @@
 #include "lcd.h"
 #include "adc.h"
 #include "main.h"
+#include "out_control.h"
 
 /** @name Global State Variables */
 /**@{*/
@@ -19,7 +20,7 @@ uint8_t buttonState = 0;   /**< Button state bitfield */
 uint8_t lcdLangId = 1;     /**< Language ID (0: EN, 1: TR) */
 static uint8_t prevPageID = 0xFF; /**< Previous page ID for change detection */
 uint8_t uiNeedsClear = 0;  /**< UI refresh flag */
-OperatingMode operatingMode = MODE_CHARGER; /**< Current operating mode */
+/* operatingMode now defined in out_control.c */
 const char * companyName = "BIENSIS"; /**< Company name editable at runtime */
 uint8_t menuIndex = 0;  /**< Current menu selection index [0..3] */
 uint8_t subIndex = 0;   /**< Current subpage selection index */
@@ -29,18 +30,7 @@ uint8_t mfgPinError = 0;     /**< 1 if last PIN attempt was wrong */
 static uint32_t mfgPinErrorUntilMs = 0; /**< millis until which error is shown */
 static uint16_t editBackupValue = 0;    /**< backup for numeric edits */
 
-/* Parameters (defaults) */
-uint8_t batteryVoltageSel = 0;   /**< 0:12V, 1:24V */
-uint16_t batteryCapacityAh = 60; /**< 1..999 */
-uint8_t batteryCount = 1;        /**< 1..24 */
-uint8_t safeChargeOn = 0;        /**< 0/1 */
-uint8_t softChargeOn = 0;        /**< 0/1 */
-uint8_t voltageEqualOn = 0;      /**< 0/1 */
-uint16_t testVoltage_dV = 120;   /**< 12.0V */
-uint16_t testCurrent_dA = 50;    /**< 5.0A */
-uint16_t outputVSet_dV = 120;    /**< 12.0V */
-uint16_t outputIMax_dA = 100;    /**< 10.0A */
-uint8_t shortCircuitTest = 0;    /**< 0/1 */
+/* UI-only parameters and PIN state */
 uint8_t brightness = 50;         /**< 0..100 */
 uint16_t mfgPinCode = 0;         /**< Default 0000 */
 uint8_t mfgPinInput[4] = {0,0,0,0};
@@ -432,7 +422,7 @@ void lcd_handle(void) {
                 LCD_Print(STR_BATV);
                 {
                     uint16_t batv;
-                    if (batteryVoltageSel)
+                    if (batInfo.batteryVoltage >= 24u)
                     {
                         batv = 24u;
                     }
@@ -447,24 +437,24 @@ void lcd_handle(void) {
             else if (prev == 1) 
 			{ 
 				LCD_Print(STR_CAPACITY);
-				LCD_PrintUInt16(batteryCapacityAh);
+				LCD_PrintUInt16_1dp(batInfo.batteryCap);
 				LCD_Print("Ah"); 
 			}
             else if (prev == 2) {
                 LCD_Print(STR_COUNT);
-                LCD_PrintUInt16(batteryCount);
+                LCD_PrintUInt16(batInfo.numberOfBattery);
             }
             else if (prev == 3) {
                 LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
-                LCD_Print(ui_get(safeChargeOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             else if (prev == 4) {
                 LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
-                LCD_Print(ui_get(softChargeOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             else /* prev == 5 */ {
                 LCD_Print(ui_get(UI_STR_EQUALIZE));
-                LCD_Print(ui_get(voltageEqualOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             /* row2 sel */
             LCD_SetCursor(0,2);
@@ -474,30 +464,30 @@ void lcd_handle(void) {
                 LCD_Print(STR_BATV);
                 {
                     uint16_t batv;
-                    if (batteryVoltageSel) { batv = 24u; } else { batv = 12u; }
+                    if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; }
                     LCD_PrintUInt16(batv);
                     LCD_WriteChar('V');
                 }
             } else if (sel == 1) {
                 LCD_Print(STR_CAPACITY);
                 if (isEditing) LCD_WriteChar('[');
-                LCD_PrintUInt16(batteryCapacityAh);
+                LCD_PrintUInt16_1dp(batInfo.batteryCap);
                 if (isEditing) LCD_WriteChar(']');
                 LCD_Print("Ah");
             } else if (sel == 2) {
                 LCD_Print(STR_COUNT);
                 if (isEditing) LCD_WriteChar('[');
-                LCD_PrintUInt16(batteryCount);
+                LCD_PrintUInt16(batInfo.numberOfBattery);
                 if (isEditing) LCD_WriteChar(']');
             } else if (sel == 3) {
                 LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
-                LCD_Print(ui_get(safeChargeOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             } else if (sel == 4) {
                 LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
-                LCD_Print(ui_get(softChargeOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             } else /* sel == 5 */ {
                 LCD_Print(ui_get(UI_STR_EQUALIZE));
-                LCD_Print(ui_get(voltageEqualOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             /* row3 next */
             LCD_SetCursor(1,3);
@@ -505,31 +495,31 @@ void lcd_handle(void) {
                 LCD_Print(STR_BATV);
                 { 
                     uint16_t batv; 
-                    if (batteryVoltageSel) { batv = 24u; } else { batv = 12u; } 
+                    if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; } 
                     LCD_PrintUInt16(batv);
                     LCD_WriteChar('V');
                 } 
             }
             else if (next == 1) { 
                 LCD_Print(STR_CAPACITY);
-                LCD_PrintUInt16(batteryCapacityAh);
+                LCD_PrintUInt16_1dp(batInfo.batteryCap);
                 LCD_Print("Ah"); 
             }
             else if (next == 2) {
                 LCD_Print(STR_COUNT);
-                LCD_PrintUInt16(batteryCount);
+                LCD_PrintUInt16(batInfo.numberOfBattery);
             }
             else if (next == 3) {
                 LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
-                LCD_Print(ui_get(safeChargeOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             else if (next == 4) {
                 LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
-                LCD_Print(ui_get(softChargeOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             else /* next == 5 */ {
                 LCD_Print(ui_get(UI_STR_EQUALIZE));
-                LCD_Print(ui_get(voltageEqualOn ? UI_STR_OPEN : UI_STR_CLOSE));
+                LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
         } else {
             uint8_t total = 2u; /* V set, I max */
@@ -889,8 +879,8 @@ void button_handle(void) {
             /* cancel: restore from backup depending on page */
             if (pageID == PAGE_ENTER_DATA) {
                 if (operatingMode == MODE_CHARGER) {
-                    if (subIndex==1) batteryCapacityAh = editBackupValue;
-                    else if (subIndex==2) batteryCount = (uint8_t)editBackupValue;
+                    if (subIndex==1) batInfo.batteryCap = (uint16_t)editBackupValue;
+                    else if (subIndex==2) batInfo.numberOfBattery = (uint8_t)editBackupValue;
                 } else {
                     if (subIndex==0) outputVSet_dV = editBackupValue;
                     else if (subIndex==1) outputIMax_dA = editBackupValue;
@@ -932,11 +922,13 @@ void button_handle(void) {
     /* On: set SHUTDOWN2 = 1 (same on all pages) */
     if (buttonState & BUT_ON_M) {
         HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, GPIO_PIN_SET);
+        deviceOn = 1;
     }
     /* Off: set SHUTDOWN2 = 0 (same on all pages) 
 	*/
     if (buttonState & BUT_OFF_M) {
         HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, GPIO_PIN_RESET);
+        deviceOn = 0;
     }
 
     /* Up/Down behavior depends on page */
@@ -954,14 +946,14 @@ void button_handle(void) {
             /* Up/Down adjust values */
             if (operatingMode == MODE_CHARGER) {
                 if (buttonState & BUT_UP_M) {
-                    if (subIndex == 0) { batteryVoltageSel ^= 1u; }
-                    else if (subIndex == 1 && batteryCapacityAh < 999) { batteryCapacityAh++; }
-                    else if (subIndex == 2 && batteryCount < 24) { batteryCount++; }
+                    if (subIndex == 0) { batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u; }
+                    else if (subIndex == 1 && batInfo.batteryCap < 999) { batInfo.batteryCap++; }
+                    else if (subIndex == 2 && batInfo.numberOfBattery < 24) { batInfo.numberOfBattery++; }
                 }
                 if (buttonState & BUT_DOWN_M) {
-                    if (subIndex == 0) { batteryVoltageSel ^= 1u; }
-                    else if (subIndex == 1 && batteryCapacityAh > 1) { batteryCapacityAh--; }
-                    else if (subIndex == 2 && batteryCount > 1) { batteryCount--; }
+                    if (subIndex == 0) { batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u; }
+                    else if (subIndex == 1 && batInfo.batteryCap > 1) { batInfo.batteryCap--; }
+                    else if (subIndex == 2 && batInfo.numberOfBattery > 1) { batInfo.numberOfBattery--; }
                 }
             } else { /* MODE_SUPPLY */
                 if (buttonState & BUT_UP_M) {
@@ -1142,20 +1134,20 @@ void button_handle(void) {
             /* Immediate toggle for selection fields; edit for numeric */
             if (operatingMode == MODE_CHARGER && subIndex == 0u) {
                 /* Bat V immediate toggle */
-                batteryVoltageSel ^= 1u;
+                batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u;
             } else if (operatingMode == MODE_CHARGER && (subIndex == 3u || subIndex == 4u || subIndex == 5u)) {
                 /* Safe/Soft/Equalize toggle directly */
                 if (subIndex == 3u)
                 {
-                    safeChargeOn ^= 1u;
+                    batInfo.safeChargeEnabled ^= 1u;
                 }
                 else if (subIndex == 4u)
                 {
-                    softChargeOn ^= 1u;
+                    batInfo.softChargeEnabled ^= 1u;
                 }
                 else
                 {
-                    voltageEqualOn ^= 1u;
+                    batInfo.equalizationEnabled ^= 1u;
                 }
             } else {
                 if (!isEditing) {
@@ -1163,11 +1155,11 @@ void button_handle(void) {
                     if (operatingMode == MODE_CHARGER) {
                         if (subIndex == 1u) 
                         { 
-                            editBackupValue = batteryCapacityAh; 
+                            editBackupValue = (uint16_t)batInfo.batteryCap; 
                         }
                         else 
                         { 
-                            editBackupValue = batteryCount; 
+                            editBackupValue = (uint16_t)batInfo.numberOfBattery; 
                         }
                     } else {
                         if (subIndex == 0u) 

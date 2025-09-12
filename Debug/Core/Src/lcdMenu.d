@@ -40,7 +40,7 @@ Core/Src/lcdMenu.o: ../Core/Src/lcdMenu.c ../Core/Inc/lcdMenu.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h \
  ../Middlewares/ST/ARM/DSP/Inc/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/adc.h \
- ../Core/Inc/main.h
+ ../Core/Inc/main.h ../Core/Inc/out_control.h ../Core/Inc/lcdMenu.h
 ../Core/Inc/lcdMenu.h:
 ../Core/Inc/lcd.h:
 ../Core/Inc/main.h:
@@ -86,3 +86,5 @@ Core/Src/lcdMenu.o: ../Core/Src/lcdMenu.c ../Core/Inc/lcdMenu.h \
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Core/Inc/adc.h:
 ../Core/Inc/main.h:
+../Core/Inc/out_control.h:
+../Core/Inc/lcdMenu.h:

@@ -24,6 +24,7 @@
 #include "lcd.h"
 #include "adc.h"
 #include "lcdMenu.h"
+#include "out_control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,8 +54,8 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint16_t dacValueV = 3000;
-uint16_t dacValueI = 1000;
+uint16_t dacValueV = 0;
+uint16_t dacValueI = 4095;
 uint8_t mainCounter = 0;
 /* USER CODE END PV */
 
@@ -130,7 +131,9 @@ int main(void)
   HAL_GPIO_WritePin(SHUTDOWN1_GPIO_Port, SHUTDOWN1_Pin, 0);
   HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, 0);
 
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dacValueI);
+
 
   pageID = 0;
   lcd_handle();
@@ -184,12 +187,16 @@ int main(void)
 		  break;
 	  }
 
-	  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
-	  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dacValueI);
+	  if(deviceOn == 1)
+	  {
+		  dacValueV +=PID_Compute(&pidVout, batInfo.floatVoltage, adcBuffer[listVBAT1]);
+		  if(dacValueV > 4095)
+		  {
+			  dacValueV = 4095;
+		  }
+		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
+	  }
 
-
-	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	 // HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

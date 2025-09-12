@@ -1,0 +1,12 @@
+operatingMode (enum MODE_CHARGER/MODE_SUPPLY): Çalışma modu (Şarj cihazı / Güç kaynağı).
+batteryVoltageSel (uint8_t, 0=12V, 1=24V): Akü nominal gerilim seçimi.
+batteryCapacityAh (uint16_t, 1..999 Ah): Akü kapasitesi (Ah).
+batteryCount (uint8_t, 1..24): Seri akü adedi.
+safeChargeOn (uint8_t, 0/1): Güvenli şarj özelliği açık/kapalı.
+softChargeOn (uint8_t, 0/1): Soft şarj özelliği açık/kapalı.
+voltageEqualOn (uint8_t, 0/1): Voltaj eşitleme (dengeleme) açık/kapalı.
+testVoltage_dV (uint16_t, dV): Test gerilimi, 1 basamak ondalıklı; örn. 125 → 12.5 V.
+testCurrent_dA (uint16_t, dA): Test akımı, 1 basamak ondalıklı; örn. 50 → 5.0 A.
+outputVSet_dV (uint16_t, dV): Çıkış gerilim set değeri (Güç kaynağı modunda).
+outputIMax_dA (uint16_t, dA): Çıkış akım üst sınırı (Güç kaynağı modunda).
+shortCircuitTest (uint8_t, 0/1): Kısa devre testi açık/kapalı (Güç kaynağı modunda).

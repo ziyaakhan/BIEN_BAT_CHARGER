@@ -129,18 +129,7 @@ extern const char * const * TITLE_NAMES_LANG[2];
 extern const char * const TITLE_NAMES_EN[2];
 extern const char * const TITLE_NAMES_TR[2];
 
-/* Parameters per specification */
-extern uint8_t batteryVoltageSel;    /**< 0:12V, 1:24V */
-extern uint16_t batteryCapacityAh;   /**< Adjustable 1..999 */
-extern uint8_t batteryCount;         /**< Adjustable 1..24 */
-extern uint8_t safeChargeOn;         /**< 0/1 */
-extern uint8_t softChargeOn;         /**< 0/1 */
-extern uint8_t voltageEqualOn;       /**< 0/1 */
-extern uint16_t testVoltage_dV;      /**< Test voltage in decivolts (0..240) */
-extern uint16_t testCurrent_dA;      /**< Test current in deciampere (0..400) */
-extern uint16_t outputVSet_dV;       /**< Supply: output voltage set (0..240 dV) */
-extern uint16_t outputIMax_dA;       /**< Supply: output current max (0..400 dA) */
-extern uint8_t shortCircuitTest;     /**< Supply: short circuit test trigger 0/1 */
+/* UI parameters and PIN state exposed if needed by other modules */
 extern uint8_t brightness;           /**< 0..100 */
 extern uint16_t mfgPinCode;          /**< Manufacturer PIN (default 0000) */
 extern uint8_t mfgPinInput[4];       /**< Current PIN entry digits */
