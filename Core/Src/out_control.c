@@ -64,11 +64,11 @@ PIDController pidIout =
 
 BATTERY_INFO batInfo = {
     .batteryVoltage             = 120,
-    .batteryCap                 = 100,
+    .batteryCap                 = 90,
     .numberOfBattery            = 1,
-    .bulkCurrent                = 9,
+    .bulkCurrent                = 120,
     .floatVoltage               = 138,
-    .absorptionVoltage          = 147,
+    .absorptionVoltage          = 146,
     .absorptionFinishCurrent    = 1,
     .storageVoltage             = 132,
     .safeVoltage                = 144,
@@ -144,7 +144,7 @@ void outCalculation()
 		switch(batInfo.chargeState)
 		{
 		case STATE_BULK:
-			   dacValueV += PID_Compute(&pidIout, batInfo.batteryCap / 10, adcIDC2);
+			   dacValueV += PID_Compute(&pidIout, batInfo.bulkCurrent / 10, adcIDC2);
 			   if(dacValueV > 4095)
 			   {
 				   dacValueV = 4095;

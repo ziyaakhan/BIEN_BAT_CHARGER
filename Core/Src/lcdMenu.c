@@ -399,7 +399,7 @@ void lcd_handle(void)
         LCD_WriteChar('V');
         LCD_SetCursor(TEMP_COL, 3);
         LCD_Print(labelsShort[3]); /* Temp/Sic */
-        LCD_PrintUInt16(adcTEMP);
+        LCD_PrintUInt16(temp);
         LCD_WriteChar('C');
     }
         break;
@@ -1033,7 +1033,7 @@ void button_handle(void) {
         HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, GPIO_PIN_RESET);
         deviceOn = 0;
         dacValueI = 0;
-        dacValueV = 0;
+        dacValueV = 2000;
     }
 
     /* Up/Down behavior depends on page */

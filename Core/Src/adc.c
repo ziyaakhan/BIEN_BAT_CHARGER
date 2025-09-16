@@ -31,15 +31,16 @@ uint16_t adcVDC1 = 0;
 uint16_t adcVDC2 = 0;
 uint16_t adcIDC2NoGain = 0;
 uint16_t adcIDC2 = 0;
+uint8_t temp;
 
 int16_t adcGain[ADC1_CHANNEL_COUNT + 3];
 
 void adc_init(void)
 {
 	adcGain[listVAC]   = 9100;
-	adcGain[listTEMP]  = 100;
+	adcGain[listTEMP]  = Q15(1);
 	adcGain[listIDC]   = 2500;
-	adcGain[listVBAT1] = 2490;
+	adcGain[listVBAT1] = 1750;
 	adcGain[listVDC1]  = Q15(1);
 	adcGain[listVDC2]  = Q15(1);
 	adcGain[listIDC2]  = 15000;
@@ -65,4 +66,28 @@ void adc_init(void)
     for (volatile int i = 0; i < 1000; i++) { __asm volatile("nop"); } // kısa gecikme
 
     LL_ADC_REG_StartConversionSWStart(ADC1);
+}
+
+void calculationTemp(uint16_t adcValue)
+{
+	if (adcValue < 3124)
+	{
+		temp = ((adcValue * M1) >>15) + C1;
+	}
+	else if ( adcValue < 3289)
+	{
+		temp = ((adcValue * M2) >>15) + C2;
+	}
+	else if (adcValue < 3545)
+	{
+		temp = ((adcValue * M3) >>15) + C3;
+	}
+	else if (adcValue < 3786)
+	{
+		temp = ((adcValue * M4) >>15) + C4;
+	}
+	else
+	{
+		temp = ((adcValue * M5) >>15) + C5;
+	}
 }

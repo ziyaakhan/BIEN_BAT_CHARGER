@@ -1,1 +1,2 @@
-../Core/Src/adc.c:37:6:adc_init	3
+../Core/Src/adc.c:38:6:adc_init	3
+../Core/Src/adc.c:71:6:calculationTemp	5
