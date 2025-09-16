@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="955813348660977751">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdint.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdint.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="9" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;lcdMenu.h&quot; not found." verbose="Include file: &quot;lcdMenu.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="10" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;lcd.h&quot; not found." verbose="Include file: &quot;lcd.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="11" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;adc.h&quot; not found." verbose="Include file: &quot;adc.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="12" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;main.h&quot; not found." verbose="Include file: &quot;main.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;out_control.h&quot; not found." verbose="Include file: &quot;out_control.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="14" column="0"/>
+        </error>
+        <error id="arrayIndexThenCheck" severity="style" msg="Array index &apos;len&apos; is used before limits check." verbose="Defensive programming: The variable &apos;len&apos; is used as an array index before it is checked that is within limits. This can mean that the array might be accessed out of bounds. Reorder conditions such as &apos;(a[i] &amp;&amp; i &lt; 10)&apos; to &apos;(i &lt; 10 &amp;&amp; a[i])&apos;. That way the array will not be accessed if the index is out of limits." cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="283" column="37"/>
+            <symbol>len</symbol>
+        </error>
+        <error id="arrayIndexThenCheck" severity="style" msg="Array index &apos;len&apos; is used before limits check." verbose="Defensive programming: The variable &apos;len&apos; is used as an array index before it is checked that is within limits. This can mean that the array might be accessed out of bounds. Reorder conditions such as &apos;(a[i] &amp;&amp; i &lt; 10)&apos; to &apos;(i &lt; 10 &amp;&amp; a[i])&apos;. That way the array will not be accessed if the index is out of limits." cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="295" column="34"/>
+            <symbol>len</symbol>
+        </error>
+        <error id="arrayIndexThenCheck" severity="style" msg="Array index &apos;n&apos; is used before limits check." verbose="Defensive programming: The variable &apos;n&apos; is used as an array index before it is checked that is within limits. This can mean that the array might be accessed out of bounds. Reorder conditions such as &apos;(a[i] &amp;&amp; i &lt; 10)&apos; to &apos;(i &lt; 10 &amp;&amp; a[i])&apos;. That way the array will not be accessed if the index is out of limits." cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="819" column="23"/>
+            <symbol>n</symbol>
+        </error>
+        <error id="arrayIndexThenCheck" severity="style" msg="Array index &apos;len&apos; is used before limits check." verbose="Defensive programming: The variable &apos;len&apos; is used as an array index before it is checked that is within limits. This can mean that the array might be accessed out of bounds. Reorder conditions such as &apos;(a[i] &amp;&amp; i &lt; 10)&apos; to &apos;(i &lt; 10 &amp;&amp; a[i])&apos;. That way the array will not be accessed if the index is out of limits." cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcdMenu.c" line="842" column="38"/>
+            <symbol>len</symbol>
+        </error>
+  <FileInfo check="ctu">
+<function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c:176:28" call-funcname="ui_get" call-argnr="1" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c" line="366" col="36" call-argexpr="UI_STR_MENU_TITLE" call-argvaluetype="0" call-argvalue="0"/>  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="ui_get" lineNumber="176"/>
+    <functiondecl functionName="ui_assign_language" lineNumber="181"/>
+    <functiondecl functionName="lcd_menu_init" lineNumber="217"/>
+    <functiondecl functionName="lcd_menu_set_page" lineNumber="227"/>
+    <functiondecl functionName="lcd_menu_set_language" lineNumber="236"/>
+    <functiondecl functionName="lcd_handle" lineNumber="253"/>
+    <functiondecl functionName="button_handle" lineNumber="909"/>
+    <functioncall functionName="B5_GPIO_Port"/>
+    <functioncall functionName="B5_Pin"/>
+    <functioncall functionName="GPIO_PIN_RESET"/>
+    <functioncall functionName="GPIO_PIN_SET"/>
+    <functioncall functionName="HAL_GPIO_ReadPin"/>
+    <functioncall functionName="HAL_GPIO_WritePin"/>
+    <functioncall functionName="HAL_GetTick"/>
+    <functioncall functionName="LCD_Clear"/>
+    <functioncall functionName="LCD_Print"/>
+    <functioncall functionName="LCD_PrintUInt16"/>
+    <functioncall functionName="LCD_PrintUInt16_1dp"/>
+    <functioncall functionName="LCD_SetCursor"/>
+    <functioncall functionName="LCD_WriteChar"/>
+    <functioncall functionName="MODE_CHARGER"/>
+    <functioncall functionName="MODE_SUPPLY"/>
+    <functioncall functionName="PAGE_ENTER_DATA"/>
+    <functioncall functionName="PAGE_LOADING"/>
+    <functioncall functionName="PAGE_MAIN"/>
+    <functioncall functionName="PAGE_MENU"/>
+    <functioncall functionName="PAGE_MFG_MENU"/>
+    <functioncall functionName="PAGE_MFG_PIN"/>
+    <functioncall functionName="PAGE_OPERATING_MODE"/>
+    <functioncall functionName="PAGE_OUTPUT_CONTROL"/>
+    <functioncall functionName="PAGE_SETTINGS"/>
+    <functioncall functionName="SHUTDOWN2_GPIO_Port"/>
+    <functioncall functionName="SHUTDOWN2_Pin"/>
+    <functioncall functionName="adcIDC2"/>
+    <functioncall functionName="adcTEMP"/>
+    <functioncall functionName="adcVAC"/>
+    <functioncall functionName="adcVBAT1"/>
+    <functioncall functionName="batteryCap"/>
+    <functioncall functionName="lcd_menu_set_language"/>
+    <functioncall functionName="lcd_menu_set_page"/>
+    <functioncall functionName="numberOfBattery"/>
+    <functioncall functionName="operatingMode"/>
+    <functioncall functionName="outputIMax_dA"/>
+    <functioncall functionName="outputVSet_dV"/>
+    <functioncall functionName="shortCircuitTest"/>
+    <functioncall functionName="testCurrent_dA"/>
+    <functioncall functionName="testVoltage_dV"/>
+    <functioncall functionName="ui_assign_language"/>
+    <functioncall functionName="ui_get"/>
+  </FileInfo>
+</analyzerinfo>

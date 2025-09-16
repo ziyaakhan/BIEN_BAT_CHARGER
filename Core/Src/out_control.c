@@ -5,23 +5,22 @@
  *      Author: Ziya
  */
 
+#include "main.h"
 #include "out_control.h"
 #include "adc.h"
 
+
 /* Own the control variables here */
+extern DAC_HandleTypeDef hdac;
 OperatingMode operatingMode = MODE_CHARGER;
-uint8_t  batteryVoltageSel = 0;
-uint16_t batteryCapacityAh = 60;
-uint8_t  batteryCount = 1;
-uint8_t  safeChargeOn = 0;
-uint8_t  softChargeOn = 0;
-uint8_t  voltageEqualOn = 0;
 uint16_t testVoltage_dV = 120;
 uint16_t testCurrent_dA = 50;
 uint16_t outputVSet_dV = 120;
 uint16_t outputIMax_dA = 100;
 uint8_t  shortCircuitTest = 0;
 uint8_t  deviceOn = 0;
+
+
 
 PIDController pidVout =
 {
@@ -65,11 +64,11 @@ PIDController pidIout =
 
 BATTERY_INFO batInfo = {
     .batteryVoltage             = 120,
-    .batteryCap                 = 90,
+    .batteryCap                 = 100,
     .numberOfBattery            = 1,
     .bulkCurrent                = 9,
-    .floatVoltage               = 135,
-    .absorptionVoltage          = 144,
+    .floatVoltage               = 138,
+    .absorptionVoltage          = 147,
     .absorptionFinishCurrent    = 1,
     .storageVoltage             = 132,
     .safeVoltage                = 144,
@@ -118,4 +117,67 @@ int PID_Compute(PIDController *pid, unsigned long setpoint, unsigned long measur
     return pid->output;
 }
 
-/* Place for future control loop using adc measurements + above parameters */
+void outCalculation()
+{
+	if(operatingMode == MODE_SUPPLY)
+	{
+		  dacValueV +=PID_Compute(&pidVout, outputVSet_dV, adcBuffer[listVBAT1]);
+		  if(dacValueV > 4095)
+		  {
+			  dacValueV = 4095;
+		  }
+		  else if (dacValueV < 0)
+		  {
+			  dacValueV = 0;
+		  }
+		  if (adcIDC2 > outputIMax_dA)
+		  {
+			  dacValueV = 0;
+			  HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, 0);
+			  deviceOn = 0;
+		  }
+		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
+	}
+
+	else
+	{
+		switch(batInfo.chargeState)
+		{
+		case STATE_BULK:
+			   dacValueV += PID_Compute(&pidIout, batInfo.batteryCap / 10, adcIDC2);
+			   if(dacValueV > 4095)
+			   {
+				   dacValueV = 4095;
+			   }
+			   else if (dacValueV < 0)
+			   {
+				   dacValueV = 0;
+			   }
+
+			   HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
+			   if(adcVBAT1 >= batInfo.absorptionVoltage)
+			   {
+				   batInfo.chargeState = STATE_ABSORPTION;
+			   }
+			break;
+
+		case STATE_ABSORPTION:
+			  dacValueV +=PID_Compute(&pidVout, batInfo.absorptionVoltage, adcBuffer[listVBAT1]);
+			  if(dacValueV > 4095)
+			  {
+				  dacValueV = 4095;
+			  }
+			  else if (dacValueV < 0)
+			  {
+				  dacValueV = 0;
+			  }
+			  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
+
+			  if(batInfo.absorptionFinishCurrent > adcIDC2)
+			  {
+				  batInfo.chargeState = STATE_FLOAT;
+			  }
+			  break;
+		}
+	}
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <builddir>batt_charger-cppcheck-build-dir</builddir>
+    <platform>arm32-wchar_t2.xml</platform>
+    <analyze-all-vs-configs>false</analyze-all-vs-configs>
+    <check-headers>true</check-headers>
+    <check-unused-templates>true</check-unused-templates>
+    <inline-suppression>true</inline-suppression>
+    <max-ctu-depth>2</max-ctu-depth>
+    <max-template-recursion>100</max-template-recursion>
+    <paths>
+        <dir name="Core"/>
+    </paths>
+    <safe-checks>
+        <class-public/>
+    </safe-checks>
+    <check-level-exhaustive/>
+    <project-name>batt_charger</project-name>
+</project>

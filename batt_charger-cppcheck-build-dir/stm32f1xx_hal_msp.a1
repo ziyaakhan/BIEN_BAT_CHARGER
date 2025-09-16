@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="5026416243100685390">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;main.h&quot; not found." verbose="Include file: &quot;main.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="22" column="0"/>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;hdac&apos; can be declared as pointer to const" verbose="Parameter &apos;hdac&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="95" column="41" info="Parameter &apos;hdac&apos; can be declared as pointer to const"/>
+            <symbol>hdac</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;hdac&apos; can be declared as pointer to const" verbose="Parameter &apos;hdac&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="129" column="43" info="Parameter &apos;hdac&apos; can be declared as pointer to const"/>
+            <symbol>hdac</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;hi2c&apos; can be declared as pointer to const" verbose="Parameter &apos;hi2c&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="158" column="41" info="Parameter &apos;hi2c&apos; can be declared as pointer to const"/>
+            <symbol>hi2c</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;hi2c&apos; can be declared as pointer to const" verbose="Parameter &apos;hi2c&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="195" column="43" info="Parameter &apos;hi2c&apos; can be declared as pointer to const"/>
+            <symbol>hi2c</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;htim_base&apos; can be declared as pointer to const" verbose="Parameter &apos;htim_base&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="226" column="46" info="Parameter &apos;htim_base&apos; can be declared as pointer to const"/>
+            <symbol>htim_base</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;htim_base&apos; can be declared as pointer to const" verbose="Parameter &apos;htim_base&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="265" column="48" info="Parameter &apos;htim_base&apos; can be declared as pointer to const"/>
+            <symbol>htim_base</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;huart&apos; can be declared as pointer to const" verbose="Parameter &apos;huart&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="304" column="43" info="Parameter &apos;huart&apos; can be declared as pointer to const"/>
+            <symbol>huart</symbol>
+        </error>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;huart&apos; can be declared as pointer to const" verbose="Parameter &apos;huart&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_hal_msp.c" line="346" column="45" info="Parameter &apos;huart&apos; can be declared as pointer to const"/>
+            <symbol>huart</symbol>
+        </error>
+  <FileInfo check="Null pointer">
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:95:6" my-argnr="1" my-argname="hdac" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="98" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:129:6" my-argnr="1" my-argname="hdac" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="131" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:158:6" my-argnr="1" my-argname="hi2c" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="161" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:195:6" my-argnr="1" my-argname="hi2c" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="197" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:226:6" my-argnr="1" my-argname="htim_base" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="228" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:265:6" my-argnr="1" my-argname="htim_base" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="267" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:304:6" my-argnr="1" my-argname="huart" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="307" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:346:6" my-argnr="1" my-argname="huart" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="348" col="6" value="0"/>
+  </FileInfo>
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:95:6" my-argnr="1" my-argname="hdac" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="98" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:129:6" my-argnr="1" my-argname="hdac" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="131" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:158:6" my-argnr="1" my-argname="hi2c" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="161" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:195:6" my-argnr="1" my-argname="hi2c" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="197" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:226:6" my-argnr="1" my-argname="htim_base" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="228" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:265:6" my-argnr="1" my-argname="htim_base" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="267" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:304:6" my-argnr="1" my-argname="huart" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="307" col="6" value="0"/>
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c:346:6" my-argnr="1" my-argname="huart" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c" line="348" col="6" value="0"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="HAL_MspInit" lineNumber="63"/>
+    <functiondecl functionName="HAL_DAC_MspInit" lineNumber="95"/>
+    <functiondecl functionName="HAL_DAC_MspDeInit" lineNumber="129"/>
+    <functiondecl functionName="HAL_I2C_MspInit" lineNumber="158"/>
+    <functiondecl functionName="HAL_I2C_MspDeInit" lineNumber="195"/>
+    <functiondecl functionName="HAL_TIM_Base_MspInit" lineNumber="226"/>
+    <functiondecl functionName="HAL_TIM_Base_MspDeInit" lineNumber="265"/>
+    <functiondecl functionName="HAL_UART_MspInit" lineNumber="304"/>
+    <functiondecl functionName="HAL_UART_MspDeInit" lineNumber="346"/>
+    <functioncall functionName="GPIOA"/>
+    <functioncall functionName="GPIOB"/>
+    <functioncall functionName="GPIO_MODE_AF_OD"/>
+    <functioncall functionName="GPIO_MODE_AF_PP"/>
+    <functioncall functionName="GPIO_MODE_ANALOG"/>
+    <functioncall functionName="GPIO_MODE_INPUT"/>
+    <functioncall functionName="GPIO_NOPULL"/>
+    <functioncall functionName="GPIO_PIN_5"/>
+    <functioncall functionName="GPIO_PIN_6"/>
+    <functioncall functionName="GPIO_PIN_7"/>
+    <functioncall functionName="GPIO_PIN_8"/>
+    <functioncall functionName="GPIO_PIN_9"/>
+    <functioncall functionName="GPIO_SPEED_FREQ_HIGH"/>
+    <functioncall functionName="HAL_GPIO_DeInit"/>
+    <functioncall functionName="HAL_GPIO_Init"/>
+    <functioncall functionName="HAL_NVIC_DisableIRQ"/>
+    <functioncall functionName="HAL_NVIC_EnableIRQ"/>
+    <functioncall functionName="HAL_NVIC_SetPriority"/>
+    <functioncall functionName="RCC_IRQn"/>
+    <functioncall functionName="TIM3_IRQn"/>
+    <functioncall functionName="TIM7_IRQn"/>
+    <functioncall functionName="__HAL_AFIO_REMAP_I2C1_ENABLE"/>
+    <functioncall functionName="__HAL_AFIO_REMAP_SWJ_NOJTAG"/>
+    <functioncall functionName="__HAL_AFIO_REMAP_USART1_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_AFIO_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_DAC_CLK_DISABLE"/>
+    <functioncall functionName="__HAL_RCC_DAC_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOA_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOB_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_I2C1_CLK_DISABLE"/>
+    <functioncall functionName="__HAL_RCC_I2C1_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_PWR_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_TIM3_CLK_DISABLE"/>
+    <functioncall functionName="__HAL_RCC_TIM3_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_TIM7_CLK_DISABLE"/>
+    <functioncall functionName="__HAL_RCC_TIM7_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_USART1_CLK_DISABLE"/>
+    <functioncall functionName="__HAL_RCC_USART1_CLK_ENABLE"/>
+  </FileInfo>
+</analyzerinfo>

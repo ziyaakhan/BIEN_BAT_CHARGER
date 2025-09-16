@@ -128,7 +128,8 @@ void Error_Handler(void);
 #define RTS_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+extern int16_t dacValueV;
+extern int16_t dacValueI;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

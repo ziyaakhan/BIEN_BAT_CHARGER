@@ -1,0 +1,10 @@
+adc.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/adc.c
+lcd.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c
+lcdMenu.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcdMenu.c
+main.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/main.c
+out_control.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/out_control.c
+stm32f1xx_hal_msp.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_hal_msp.c
+stm32f1xx_it.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/stm32f1xx_it.c
+syscalls.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/syscalls.c
+sysmem.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/sysmem.c
+system_stm32f1xx.a1::C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/system_stm32f1xx.c

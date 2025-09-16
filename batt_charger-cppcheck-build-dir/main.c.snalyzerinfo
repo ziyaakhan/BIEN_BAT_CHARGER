@@ -1,0 +1,12 @@
+main global:[dacValueI,dacValueV,hdac,htim3,mainCounter] call:[HAL_DAC_SetValue,HAL_DAC_Start,HAL_Delay,HAL_GPIO_WritePin,HAL_Init,HAL_TIM_Base_Start,LCD_Backlight,LCD_Init,MX_ADC1_Init,MX_DAC_Init,MX_DMA_Init,MX_GPIO_Init,MX_I2C1_Init,MX_TIM3_Init,MX_TIM7_Init,MX_USART1_UART_Init,PID_Compute,SystemClock_Config,adc_init,button_handle,lcd_handle,sqrt] noreturn:[HAL_DAC_SetValue]
+SystemClock_Config call:[Error_Handler,HAL_RCCEx_PeriphCLKConfig,HAL_RCC_ClockConfig,HAL_RCC_EnableCSS,HAL_RCC_OscConfig] noreturn:[Error_Handler,HAL_RCC_EnableCSS]
+MX_ADC1_Init call:[LL_ADC_Init,LL_ADC_REG_Init,LL_ADC_REG_SetSequencerRanks,LL_ADC_SetChannelSamplingTime,LL_APB2_GRP1_EnableClock,LL_DMA_SetChannelPriorityLevel,LL_DMA_SetDataTransferDirection,LL_DMA_SetMemoryIncMode,LL_DMA_SetMemorySize,LL_DMA_SetMode,LL_DMA_SetPeriphIncMode,LL_DMA_SetPeriphSize,LL_GPIO_Init,NVIC_EnableIRQ,NVIC_EncodePriority,NVIC_GetPriorityGrouping,NVIC_SetPriority] noreturn:[LL_ADC_SetChannelSamplingTime]
+MX_DAC_Init global:[hdac] call:[Error_Handler,HAL_DAC_ConfigChannel,HAL_DAC_Init] noreturn:[Error_Handler]
+MX_I2C1_Init global:[hi2c1] call:[Error_Handler,HAL_I2C_Init] noreturn:[Error_Handler]
+MX_TIM3_Init global:[htim3] call:[Error_Handler,HAL_TIMEx_MasterConfigSynchronization,HAL_TIM_Base_Init,HAL_TIM_ConfigClockSource] noreturn:[Error_Handler]
+MX_TIM7_Init global:[htim7] call:[Error_Handler,HAL_TIMEx_MasterConfigSynchronization,HAL_TIM_Base_Init] noreturn:[Error_Handler]
+MX_USART1_UART_Init global:[huart1] call:[Error_Handler,HAL_UART_Init] noreturn:[Error_Handler]
+MX_DMA_Init call:[LL_AHB1_GRP1_EnableClock,NVIC_EnableIRQ,NVIC_EncodePriority,NVIC_GetPriorityGrouping,NVIC_SetPriority] noreturn:[NVIC_EnableIRQ]
+MX_GPIO_Init call:[HAL_GPIO_Init,HAL_GPIO_WritePin,HAL_NVIC_EnableIRQ,HAL_NVIC_SetPriority,__HAL_AFIO_REMAP_TIM2_PARTIAL_1,__HAL_RCC_GPIOA_CLK_ENABLE,__HAL_RCC_GPIOB_CLK_ENABLE,__HAL_RCC_GPIOC_CLK_ENABLE,__HAL_RCC_GPIOD_CLK_ENABLE] noreturn:[HAL_NVIC_EnableIRQ]
+Error_Handler call:[__disable_irq]
+assert_failed

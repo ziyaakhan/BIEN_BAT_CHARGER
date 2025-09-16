@@ -1,1 +1,2 @@
-../Core/Src/out_control.c:89:5:PID_Compute	4	static
+../Core/Src/out_control.c:88:5:PID_Compute	4	static
+../Core/Src/out_control.c:120:6:outCalculation	8	static

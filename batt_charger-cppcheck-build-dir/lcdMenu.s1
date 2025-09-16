@@ -1,0 +1,7 @@
+ui_get global:[UI_STR_TABLE,lcdLangId]
+ui_assign_language global:[CH_CURR,LABELS_EN_SHORT,LABELS_TR_SHORT,MENU_ITEMS_EN,MENU_ITEMS_TR,STATUS_COL,STR_BATV,STR_CAPACITY,STR_COUNT,STR_LABELS_SHORT,STR_LANG_VAL,STR_LOAD_BORDER_BOTTOM,STR_LOAD_BORDER_TOP,STR_MENU_ITEMS,TEMP_COL,UI_STR_TABLE,lcdLangId,strEN_LOADING_LINE0,strEN_LOADING_LINE3,strTR_LOADING_LINE0,strTR_LOADING_LINE3]
+lcd_menu_init global:[pageID] call:[LCD_Clear,ui_assign_language] noreturn:[LCD_Clear]
+lcd_menu_set_page global:[pageID] call:[LCD_Clear] noreturn:[LCD_Clear]
+lcd_menu_set_language global:[lcdLangId] call:[LCD_Clear,ui_assign_language] noreturn:[LCD_Clear]
+lcd_handle global:[CH_CURR,DEVICE_NAMES_LANG,STATUS_COL,STR_BATV,STR_CAPACITY,STR_COUNT,STR_LABELS_SHORT,STR_LANG_VAL,STR_LOAD_BORDER_BOTTOM,STR_LOAD_BORDER_TOP,STR_MENU_ITEMS,TEMP_COL,TITLE_NAMES_LANG,brightness,companyName,isEditing,lcdLangId,menuIndex,mfgPinError,mfgPinErrorUntilMs,mfgPinInput,mfgPinPos,pageID,prevPageID,subIndex,uiNeedsClear] call:[HAL_GPIO_ReadPin,HAL_GetTick,LCD_Clear,LCD_Print,LCD_PrintUInt16,LCD_PrintUInt16_1dp,LCD_SetCursor,LCD_WriteChar,ui_assign_language,ui_get] noreturn:[LCD_Print,LCD_PrintUInt16,LCD_WriteChar,ui_assign_language,ui_get]
+button_handle global:[brightness,buttonState,editBackupValue,isEditing,lcdLangId,menuIndex,mfgPinCode,mfgPinError,mfgPinErrorUntilMs,mfgPinInput,mfgPinPos,pageID,rightPressStartMs,subIndex,uiNeedsClear] call:[HAL_GPIO_ReadPin,HAL_GPIO_WritePin,HAL_GetTick,lcd_menu_set_language,lcd_menu_set_page] noreturn:[HAL_GetTick,lcd_menu_set_language,lcd_menu_set_page]

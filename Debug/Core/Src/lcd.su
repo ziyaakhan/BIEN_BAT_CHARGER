@@ -15,4 +15,4 @@
 ../Core/Src/lcd.c:217:6:LCD_PrintUInt16	16	static
 ../Core/Src/lcd.c:247:6:LCD_PrintInt16	8	static
 ../Core/Src/lcd.c:260:6:LCD_PrintUInt16_1dp	16	static
-../Core/Src/lcd.c:276:6:LCD_PrintUInt8_2d	16	static
+../Core/Src/lcd.c:274:6:LCD_PrintUInt8_2d	16	static

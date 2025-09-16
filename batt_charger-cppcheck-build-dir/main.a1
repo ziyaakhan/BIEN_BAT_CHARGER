@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="3961761432525598873">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;main.h&quot; not found." verbose="Include file: &quot;main.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\main.c" line="20" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;lcd.h&quot; not found." verbose="Include file: &quot;lcd.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\main.c" line="24" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;adc.h&quot; not found." verbose="Include file: &quot;adc.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\main.c" line="25" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;lcdMenu.h&quot; not found." verbose="Include file: &quot;lcdMenu.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\main.c" line="26" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;out_control.h&quot; not found." verbose="Include file: &quot;out_control.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\main.c" line="27" column="0"/>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="main" lineNumber="85"/>
+    <functiondecl functionName="SystemClock_Config" lineNumber="211"/>
+    <functiondecl functionName="MX_ADC1_Init" lineNumber="261"/>
+    <functiondecl functionName="MX_DAC_Init" lineNumber="378"/>
+    <functiondecl functionName="MX_I2C1_Init" lineNumber="425"/>
+    <functiondecl functionName="MX_TIM3_Init" lineNumber="459"/>
+    <functiondecl functionName="MX_TIM7_Init" lineNumber="504"/>
+    <functiondecl functionName="MX_USART1_UART_Init" lineNumber="542"/>
+    <functiondecl functionName="MX_DMA_Init" lineNumber="573"/>
+    <functiondecl functionName="MX_GPIO_Init" lineNumber="592"/>
+    <functiondecl functionName="Error_Handler" lineNumber="677"/>
+    <functioncall functionName="ADC1"/>
+    <functioncall functionName="ADC1_IRQn"/>
+    <functioncall functionName="B3_Pin"/>
+    <functioncall functionName="BUZZER_GPIO_Port"/>
+    <functioncall functionName="BUZZER_Pin"/>
+    <functioncall functionName="DAC"/>
+    <functioncall functionName="DAC_ALIGN_12B_R"/>
+    <functioncall functionName="DAC_CHANNEL_1"/>
+    <functioncall functionName="DAC_CHANNEL_2"/>
+    <functioncall functionName="DAC_OUTPUTBUFFER_ENABLE"/>
+    <functioncall functionName="DAC_TRIGGER_NONE"/>
+    <functioncall functionName="DMA1"/>
+    <functioncall functionName="DMA1_Channel1_IRQn"/>
+    <functioncall functionName="EXTI15_10_IRQn"/>
+    <functioncall functionName="EXTI2_IRQn"/>
+    <functioncall functionName="Error_Handler"/>
+    <functioncall functionName="FLASH_LATENCY_0"/>
+    <functioncall functionName="GPIOA"/>
+    <functioncall functionName="GPIOB"/>
+    <functioncall functionName="GPIOC"/>
+    <functioncall functionName="GPIO_MODE_AF_PP"/>
+    <functioncall functionName="GPIO_MODE_IT_RISING"/>
+    <functioncall functionName="GPIO_MODE_OUTPUT_PP"/>
+    <functioncall functionName="GPIO_NOPULL"/>
+    <functioncall functionName="GPIO_PIN_15"/>
+    <functioncall functionName="GPIO_PIN_RESET"/>
+    <functioncall functionName="GPIO_PIN_SET"/>
+    <functioncall functionName="GPIO_SPEED_FREQ_LOW"/>
+    <functioncall functionName="HAL_DAC_ConfigChannel"/>
+    <functioncall functionName="HAL_DAC_Init"/>
+    <functioncall functionName="HAL_DAC_SetValue"/>
+    <functioncall functionName="HAL_DAC_Start"/>
+    <functioncall functionName="HAL_Delay"/>
+    <functioncall functionName="HAL_GPIO_Init"/>
+    <functioncall functionName="HAL_GPIO_WritePin"/>
+    <functioncall functionName="HAL_I2C_Init"/>
+    <functioncall functionName="HAL_Init"/>
+    <functioncall functionName="HAL_NVIC_EnableIRQ"/>
+    <functioncall functionName="HAL_NVIC_SetPriority"/>
+    <functioncall functionName="HAL_RCCEx_PeriphCLKConfig"/>
+    <functioncall functionName="HAL_RCC_ClockConfig"/>
+    <functioncall functionName="HAL_RCC_EnableCSS"/>
+    <functioncall functionName="HAL_RCC_OscConfig"/>
+    <functioncall functionName="HAL_TIMEx_MasterConfigSynchronization"/>
+    <functioncall functionName="HAL_TIM_Base_Init"/>
+    <functioncall functionName="HAL_TIM_Base_Start"/>
+    <functioncall functionName="HAL_TIM_ConfigClockSource"/>
+    <functioncall functionName="HAL_UART_Init"/>
+    <functioncall functionName="I2C1"/>
+    <functioncall functionName="I2C_ADDRESSINGMODE_7BIT"/>
+    <functioncall functionName="I2C_DUALADDRESS_DISABLE"/>
+    <functioncall functionName="I2C_DUTYCYCLE_2"/>
+    <functioncall functionName="I2C_GENERALCALL_DISABLE"/>
+    <functioncall functionName="I2C_NOSTRETCH_DISABLE"/>
+    <functioncall functionName="LCD_BL_GPIO_Port"/>
+    <functioncall functionName="LCD_BL_Pin"/>
+    <functioncall functionName="LCD_Backlight"/>
+    <functioncall functionName="LCD_D0_Pin"/>
+    <functioncall functionName="LCD_Init"/>
+    <functioncall functionName="LED_GPIO_Port"/>
+    <functioncall functionName="LED_Pin"/>
+    <functioncall functionName="LL_ADC_CHANNEL_0"/>
+    <functioncall functionName="LL_ADC_CHANNEL_1"/>
+    <functioncall functionName="LL_ADC_CHANNEL_2"/>
+    <functioncall functionName="LL_ADC_CHANNEL_6"/>
+    <functioncall functionName="LL_ADC_CHANNEL_7"/>
+    <functioncall functionName="LL_ADC_CHANNEL_8"/>
+    <functioncall functionName="LL_ADC_CHANNEL_9"/>
+    <functioncall functionName="LL_ADC_DATA_ALIGN_RIGHT"/>
+    <functioncall functionName="LL_ADC_Init"/>
+    <functioncall functionName="LL_ADC_REG_CONV_SINGLE"/>
+    <functioncall functionName="LL_ADC_REG_DMA_TRANSFER_UNLIMITED"/>
+    <functioncall functionName="LL_ADC_REG_Init"/>
+    <functioncall functionName="LL_ADC_REG_RANK_1"/>
+    <functioncall functionName="LL_ADC_REG_RANK_2"/>
+    <functioncall functionName="LL_ADC_REG_RANK_3"/>
+    <functioncall functionName="LL_ADC_REG_RANK_4"/>
+    <functioncall functionName="LL_ADC_REG_RANK_5"/>
+    <functioncall functionName="LL_ADC_REG_RANK_6"/>
+    <functioncall functionName="LL_ADC_REG_RANK_7"/>
+    <functioncall functionName="LL_ADC_REG_SEQ_DISCONT_DISABLE"/>
+    <functioncall functionName="LL_ADC_REG_SEQ_SCAN_ENABLE_7RANKS"/>
+    <functioncall functionName="LL_ADC_REG_SetSequencerRanks"/>
+    <functioncall functionName="LL_ADC_REG_TRIG_EXT_TIM3_TRGO"/>
+    <functioncall functionName="LL_ADC_SAMPLINGTIME_13CYCLES_5"/>
+    <functioncall functionName="LL_ADC_SEQ_SCAN_ENABLE"/>
+    <functioncall functionName="LL_ADC_SetChannelSamplingTime"/>
+    <functioncall functionName="LL_AHB1_GRP1_EnableClock"/>
+    <functioncall functionName="LL_AHB1_GRP1_PERIPH_DMA1"/>
+    <functioncall functionName="LL_APB2_GRP1_EnableClock"/>
+    <functioncall functionName="LL_APB2_GRP1_PERIPH_ADC1"/>
+    <functioncall functionName="LL_APB2_GRP1_PERIPH_GPIOA"/>
+    <functioncall functionName="LL_APB2_GRP1_PERIPH_GPIOB"/>
+    <functioncall functionName="LL_DMA_CHANNEL_1"/>
+    <functioncall functionName="LL_DMA_DIRECTION_PERIPH_TO_MEMORY"/>
+    <functioncall functionName="LL_DMA_MDATAALIGN_HALFWORD"/>
+    <functioncall functionName="LL_DMA_MEMORY_INCREMENT"/>
+    <functioncall functionName="LL_DMA_MODE_CIRCULAR"/>
+    <functioncall functionName="LL_DMA_PDATAALIGN_HALFWORD"/>
+    <functioncall functionName="LL_DMA_PERIPH_NOINCREMENT"/>
+    <functioncall functionName="LL_DMA_PRIORITY_VERYHIGH"/>
+    <functioncall functionName="LL_DMA_SetChannelPriorityLevel"/>
+    <functioncall functionName="LL_DMA_SetDataTransferDirection"/>
+    <functioncall functionName="LL_DMA_SetMemoryIncMode"/>
+    <functioncall functionName="LL_DMA_SetMemorySize"/>
+    <functioncall functionName="LL_DMA_SetMode"/>
+    <functioncall functionName="LL_DMA_SetPeriphIncMode"/>
+    <functioncall functionName="LL_DMA_SetPeriphSize"/>
+    <functioncall functionName="LL_GPIO_Init"/>
+    <functioncall functionName="LL_GPIO_MODE_ANALOG"/>
+    <functioncall functionName="LL_GPIO_PIN_1"/>
+    <functioncall functionName="LL_GPIO_PIN_7"/>
+    <functioncall functionName="MX_ADC1_Init"/>
+    <functioncall functionName="MX_DAC_Init"/>
+    <functioncall functionName="MX_DMA_Init"/>
+    <functioncall functionName="MX_GPIO_Init"/>
+    <functioncall functionName="MX_I2C1_Init"/>
+    <functioncall functionName="MX_TIM3_Init"/>
+    <functioncall functionName="MX_TIM7_Init"/>
+    <functioncall functionName="MX_USART1_UART_Init"/>
+    <functioncall functionName="NVIC_EnableIRQ"/>
+    <functioncall functionName="NVIC_EncodePriority"/>
+    <functioncall functionName="NVIC_GetPriorityGrouping"/>
+    <functioncall functionName="NVIC_SetPriority"/>
+    <functioncall functionName="N_VALUE"/>
+    <functioncall functionName="PID_Compute"/>
+    <functioncall functionName="RCC_ADCPCLK2_DIV2"/>
+    <functioncall functionName="RCC_CLOCKTYPE_PCLK2"/>
+    <functioncall functionName="RCC_HCLK_DIV1"/>
+    <functioncall functionName="RCC_HSE_ON"/>
+    <functioncall functionName="RCC_HSE_PREDIV_DIV2"/>
+    <functioncall functionName="RCC_OSCILLATORTYPE_HSE"/>
+    <functioncall functionName="RCC_PERIPHCLK_ADC"/>
+    <functioncall functionName="RCC_PLLSOURCE_HSE"/>
+    <functioncall functionName="RCC_PLL_MUL2"/>
+    <functioncall functionName="RCC_PLL_ON"/>
+    <functioncall functionName="RCC_SYSCLKSOURCE_PLLCLK"/>
+    <functioncall functionName="RCC_SYSCLK_DIV1"/>
+    <functioncall functionName="RTS_Pin"/>
+    <functioncall functionName="SHUTDOWN1_GPIO_Port"/>
+    <functioncall functionName="SHUTDOWN1_Pin"/>
+    <functioncall functionName="SHUTDOWN2_GPIO_Port"/>
+    <functioncall functionName="SHUTDOWN2_Pin"/>
+    <functioncall functionName="SystemClock_Config"/>
+    <functioncall functionName="TIM3"/>
+    <functioncall functionName="TIM7"/>
+    <functioncall functionName="TIM_AUTORELOAD_PRELOAD_DISABLE"/>
+    <functioncall functionName="TIM_CLOCKDIVISION_DIV1"/>
+    <functioncall functionName="TIM_CLOCKSOURCE_INTERNAL"/>
+    <functioncall functionName="TIM_COUNTERMODE_UP"/>
+    <functioncall functionName="TIM_MASTERSLAVEMODE_DISABLE"/>
+    <functioncall functionName="TIM_TRGO_UPDATE"/>
+    <functioncall functionName="UART_HWCONTROL_NONE"/>
+    <functioncall functionName="UART_MODE_TX_RX"/>
+    <functioncall functionName="UART_OVERSAMPLING_16"/>
+    <functioncall functionName="UART_PARITY_NONE"/>
+    <functioncall functionName="UART_STOPBITS_1"/>
+    <functioncall functionName="UART_WORDLENGTH_8B"/>
+    <functioncall functionName="USART1"/>
+    <functioncall functionName="__HAL_AFIO_REMAP_TIM2_PARTIAL_1"/>
+    <functioncall functionName="__HAL_RCC_GPIOA_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOB_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOC_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOD_CLK_ENABLE"/>
+    <functioncall functionName="__disable_irq"/>
+    <functioncall functionName="adc_init"/>
+    <functioncall functionName="button_handle"/>
+    <functioncall functionName="floatVoltage"/>
+    <functioncall functionName="lcd_handle"/>
+    <functioncall functionName="listVBAT1"/>
+    <functioncall functionName="pidVout"/>
+    <functioncall functionName="sqrt"/>
+  </FileInfo>
+        <error id="constParameterPointer" severity="style" msg="Parameter &apos;file&apos; can be declared as pointer to const" verbose="Parameter &apos;file&apos; can be declared as pointer to const" cwe="398" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/main.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\main.c" line="695" column="29" info="Parameter &apos;file&apos; can be declared as pointer to const"/>
+            <symbol>file</symbol>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="main" lineNumber="85"/>
+    <functiondecl functionName="SystemClock_Config" lineNumber="211"/>
+    <functiondecl functionName="MX_ADC1_Init" lineNumber="261"/>
+    <functiondecl functionName="MX_DAC_Init" lineNumber="378"/>
+    <functiondecl functionName="MX_I2C1_Init" lineNumber="425"/>
+    <functiondecl functionName="MX_TIM3_Init" lineNumber="459"/>
+    <functiondecl functionName="MX_TIM7_Init" lineNumber="504"/>
+    <functiondecl functionName="MX_USART1_UART_Init" lineNumber="542"/>
+    <functiondecl functionName="MX_DMA_Init" lineNumber="573"/>
+    <functiondecl functionName="MX_GPIO_Init" lineNumber="592"/>
+    <functiondecl functionName="Error_Handler" lineNumber="677"/>
+    <functiondecl functionName="assert_failed" lineNumber="695"/>
+    <functioncall functionName="ADC1"/>
+    <functioncall functionName="ADC1_IRQn"/>
+    <functioncall functionName="B3_Pin"/>
+    <functioncall functionName="BUZZER_GPIO_Port"/>
+    <functioncall functionName="BUZZER_Pin"/>
+    <functioncall functionName="DAC"/>
+    <functioncall functionName="DAC_ALIGN_12B_R"/>
+    <functioncall functionName="DAC_CHANNEL_1"/>
+    <functioncall functionName="DAC_CHANNEL_2"/>
+    <functioncall functionName="DAC_OUTPUTBUFFER_ENABLE"/>
+    <functioncall functionName="DAC_TRIGGER_NONE"/>
+    <functioncall functionName="DMA1"/>
+    <functioncall functionName="DMA1_Channel1_IRQn"/>
+    <functioncall functionName="EXTI15_10_IRQn"/>
+    <functioncall functionName="EXTI2_IRQn"/>
+    <functioncall functionName="Error_Handler"/>
+    <functioncall functionName="FLASH_LATENCY_0"/>
+    <functioncall functionName="GPIOA"/>
+    <functioncall functionName="GPIOB"/>
+    <functioncall functionName="GPIOC"/>
+    <functioncall functionName="GPIO_MODE_AF_PP"/>
+    <functioncall functionName="GPIO_MODE_IT_RISING"/>
+    <functioncall functionName="GPIO_MODE_OUTPUT_PP"/>
+    <functioncall functionName="GPIO_NOPULL"/>
+    <functioncall functionName="GPIO_PIN_15"/>
+    <functioncall functionName="GPIO_PIN_RESET"/>
+    <functioncall functionName="GPIO_PIN_SET"/>
+    <functioncall functionName="GPIO_SPEED_FREQ_LOW"/>
+    <functioncall functionName="HAL_DAC_ConfigChannel"/>
+    <functioncall functionName="HAL_DAC_Init"/>
+    <functioncall functionName="HAL_DAC_SetValue"/>
+    <functioncall functionName="HAL_DAC_Start"/>
+    <functioncall functionName="HAL_Delay"/>
+    <functioncall functionName="HAL_GPIO_Init"/>
+    <functioncall functionName="HAL_GPIO_WritePin"/>
+    <functioncall functionName="HAL_I2C_Init"/>
+    <functioncall functionName="HAL_Init"/>
+    <functioncall functionName="HAL_NVIC_EnableIRQ"/>
+    <functioncall functionName="HAL_NVIC_SetPriority"/>
+    <functioncall functionName="HAL_RCCEx_PeriphCLKConfig"/>
+    <functioncall functionName="HAL_RCC_ClockConfig"/>
+    <functioncall functionName="HAL_RCC_EnableCSS"/>
+    <functioncall functionName="HAL_RCC_OscConfig"/>
+    <functioncall functionName="HAL_TIMEx_MasterConfigSynchronization"/>
+    <functioncall functionName="HAL_TIM_Base_Init"/>
+    <functioncall functionName="HAL_TIM_Base_Start"/>
+    <functioncall functionName="HAL_TIM_ConfigClockSource"/>
+    <functioncall functionName="HAL_UART_Init"/>
+    <functioncall functionName="I2C1"/>
+    <functioncall functionName="I2C_ADDRESSINGMODE_7BIT"/>
+    <functioncall functionName="I2C_DUALADDRESS_DISABLE"/>
+    <functioncall functionName="I2C_DUTYCYCLE_2"/>
+    <functioncall functionName="I2C_GENERALCALL_DISABLE"/>
+    <functioncall functionName="I2C_NOSTRETCH_DISABLE"/>
+    <functioncall functionName="LCD_BL_GPIO_Port"/>
+    <functioncall functionName="LCD_BL_Pin"/>
+    <functioncall functionName="LCD_Backlight"/>
+    <functioncall functionName="LCD_D0_Pin"/>
+    <functioncall functionName="LCD_Init"/>
+    <functioncall functionName="LED_GPIO_Port"/>
+    <functioncall functionName="LED_Pin"/>
+    <functioncall functionName="LL_ADC_CHANNEL_0"/>
+    <functioncall functionName="LL_ADC_CHANNEL_1"/>
+    <functioncall functionName="LL_ADC_CHANNEL_2"/>
+    <functioncall functionName="LL_ADC_CHANNEL_6"/>
+    <functioncall functionName="LL_ADC_CHANNEL_7"/>
+    <functioncall functionName="LL_ADC_CHANNEL_8"/>
+    <functioncall functionName="LL_ADC_CHANNEL_9"/>
+    <functioncall functionName="LL_ADC_DATA_ALIGN_RIGHT"/>
+    <functioncall functionName="LL_ADC_Init"/>
+    <functioncall functionName="LL_ADC_REG_CONV_SINGLE"/>
+    <functioncall functionName="LL_ADC_REG_DMA_TRANSFER_UNLIMITED"/>
+    <functioncall functionName="LL_ADC_REG_Init"/>
+    <functioncall functionName="LL_ADC_REG_RANK_1"/>
+    <functioncall functionName="LL_ADC_REG_RANK_2"/>
+    <functioncall functionName="LL_ADC_REG_RANK_3"/>
+    <functioncall functionName="LL_ADC_REG_RANK_4"/>
+    <functioncall functionName="LL_ADC_REG_RANK_5"/>
+    <functioncall functionName="LL_ADC_REG_RANK_6"/>
+    <functioncall functionName="LL_ADC_REG_RANK_7"/>
+    <functioncall functionName="LL_ADC_REG_SEQ_DISCONT_DISABLE"/>
+    <functioncall functionName="LL_ADC_REG_SEQ_SCAN_ENABLE_7RANKS"/>
+    <functioncall functionName="LL_ADC_REG_SetSequencerRanks"/>
+    <functioncall functionName="LL_ADC_REG_TRIG_EXT_TIM3_TRGO"/>
+    <functioncall functionName="LL_ADC_SAMPLINGTIME_13CYCLES_5"/>
+    <functioncall functionName="LL_ADC_SEQ_SCAN_ENABLE"/>
+    <functioncall functionName="LL_ADC_SetChannelSamplingTime"/>
+    <functioncall functionName="LL_AHB1_GRP1_EnableClock"/>
+    <functioncall functionName="LL_AHB1_GRP1_PERIPH_DMA1"/>
+    <functioncall functionName="LL_APB2_GRP1_EnableClock"/>
+    <functioncall functionName="LL_APB2_GRP1_PERIPH_ADC1"/>
+    <functioncall functionName="LL_APB2_GRP1_PERIPH_GPIOA"/>
+    <functioncall functionName="LL_APB2_GRP1_PERIPH_GPIOB"/>
+    <functioncall functionName="LL_DMA_CHANNEL_1"/>
+    <functioncall functionName="LL_DMA_DIRECTION_PERIPH_TO_MEMORY"/>
+    <functioncall functionName="LL_DMA_MDATAALIGN_HALFWORD"/>
+    <functioncall functionName="LL_DMA_MEMORY_INCREMENT"/>
+    <functioncall functionName="LL_DMA_MODE_CIRCULAR"/>
+    <functioncall functionName="LL_DMA_PDATAALIGN_HALFWORD"/>
+    <functioncall functionName="LL_DMA_PERIPH_NOINCREMENT"/>
+    <functioncall functionName="LL_DMA_PRIORITY_VERYHIGH"/>
+    <functioncall functionName="LL_DMA_SetChannelPriorityLevel"/>
+    <functioncall functionName="LL_DMA_SetDataTransferDirection"/>
+    <functioncall functionName="LL_DMA_SetMemoryIncMode"/>
+    <functioncall functionName="LL_DMA_SetMemorySize"/>
+    <functioncall functionName="LL_DMA_SetMode"/>
+    <functioncall functionName="LL_DMA_SetPeriphIncMode"/>
+    <functioncall functionName="LL_DMA_SetPeriphSize"/>
+    <functioncall functionName="LL_GPIO_Init"/>
+    <functioncall functionName="LL_GPIO_MODE_ANALOG"/>
+    <functioncall functionName="LL_GPIO_PIN_1"/>
+    <functioncall functionName="LL_GPIO_PIN_7"/>
+    <functioncall functionName="MX_ADC1_Init"/>
+    <functioncall functionName="MX_DAC_Init"/>
+    <functioncall functionName="MX_DMA_Init"/>
+    <functioncall functionName="MX_GPIO_Init"/>
+    <functioncall functionName="MX_I2C1_Init"/>
+    <functioncall functionName="MX_TIM3_Init"/>
+    <functioncall functionName="MX_TIM7_Init"/>
+    <functioncall functionName="MX_USART1_UART_Init"/>
+    <functioncall functionName="NVIC_EnableIRQ"/>
+    <functioncall functionName="NVIC_EncodePriority"/>
+    <functioncall functionName="NVIC_GetPriorityGrouping"/>
+    <functioncall functionName="NVIC_SetPriority"/>
+    <functioncall functionName="N_VALUE"/>
+    <functioncall functionName="PID_Compute"/>
+    <functioncall functionName="RCC_ADCPCLK2_DIV2"/>
+    <functioncall functionName="RCC_CLOCKTYPE_PCLK2"/>
+    <functioncall functionName="RCC_HCLK_DIV1"/>
+    <functioncall functionName="RCC_HSE_ON"/>
+    <functioncall functionName="RCC_HSE_PREDIV_DIV2"/>
+    <functioncall functionName="RCC_OSCILLATORTYPE_HSE"/>
+    <functioncall functionName="RCC_PERIPHCLK_ADC"/>
+    <functioncall functionName="RCC_PLLSOURCE_HSE"/>
+    <functioncall functionName="RCC_PLL_MUL2"/>
+    <functioncall functionName="RCC_PLL_ON"/>
+    <functioncall functionName="RCC_SYSCLKSOURCE_PLLCLK"/>
+    <functioncall functionName="RCC_SYSCLK_DIV1"/>
+    <functioncall functionName="RTS_Pin"/>
+    <functioncall functionName="SHUTDOWN1_GPIO_Port"/>
+    <functioncall functionName="SHUTDOWN1_Pin"/>
+    <functioncall functionName="SHUTDOWN2_GPIO_Port"/>
+    <functioncall functionName="SHUTDOWN2_Pin"/>
+    <functioncall functionName="SystemClock_Config"/>
+    <functioncall functionName="TIM3"/>
+    <functioncall functionName="TIM7"/>
+    <functioncall functionName="TIM_AUTORELOAD_PRELOAD_DISABLE"/>
+    <functioncall functionName="TIM_CLOCKDIVISION_DIV1"/>
+    <functioncall functionName="TIM_CLOCKSOURCE_INTERNAL"/>
+    <functioncall functionName="TIM_COUNTERMODE_UP"/>
+    <functioncall functionName="TIM_MASTERSLAVEMODE_DISABLE"/>
+    <functioncall functionName="TIM_TRGO_UPDATE"/>
+    <functioncall functionName="UART_HWCONTROL_NONE"/>
+    <functioncall functionName="UART_MODE_TX_RX"/>
+    <functioncall functionName="UART_OVERSAMPLING_16"/>
+    <functioncall functionName="UART_PARITY_NONE"/>
+    <functioncall functionName="UART_STOPBITS_1"/>
+    <functioncall functionName="UART_WORDLENGTH_8B"/>
+    <functioncall functionName="USART1"/>
+    <functioncall functionName="__HAL_AFIO_REMAP_TIM2_PARTIAL_1"/>
+    <functioncall functionName="__HAL_RCC_GPIOA_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOB_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOC_CLK_ENABLE"/>
+    <functioncall functionName="__HAL_RCC_GPIOD_CLK_ENABLE"/>
+    <functioncall functionName="__disable_irq"/>
+    <functioncall functionName="adc_init"/>
+    <functioncall functionName="button_handle"/>
+    <functioncall functionName="floatVoltage"/>
+    <functioncall functionName="lcd_handle"/>
+    <functioncall functionName="listVBAT1"/>
+    <functioncall functionName="pidVout"/>
+    <functioncall functionName="sqrt"/>
+  </FileInfo>
+</analyzerinfo>

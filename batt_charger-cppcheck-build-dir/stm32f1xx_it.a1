@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="11881679449633120124">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;main.h&quot; not found." verbose="Include file: &quot;main.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_it.c" line="21" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;stm32f1xx_it.h&quot; not found." verbose="Include file: &quot;stm32f1xx_it.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_it.c" line="22" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;adc.h&quot; not found." verbose="Include file: &quot;adc.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_it.c" line="25" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;lcdMenu.h&quot; not found." verbose="Include file: &quot;lcdMenu.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\stm32f1xx_it.c" line="26" column="0"/>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="NMI_Handler" lineNumber="72"/>
+    <functiondecl functionName="HardFault_Handler" lineNumber="88"/>
+    <functiondecl functionName="MemManage_Handler" lineNumber="103"/>
+    <functiondecl functionName="BusFault_Handler" lineNumber="118"/>
+    <functiondecl functionName="UsageFault_Handler" lineNumber="133"/>
+    <functiondecl functionName="SVC_Handler" lineNumber="148"/>
+    <functiondecl functionName="DebugMon_Handler" lineNumber="161"/>
+    <functiondecl functionName="PendSV_Handler" lineNumber="174"/>
+    <functiondecl functionName="SysTick_Handler" lineNumber="187"/>
+    <functiondecl functionName="RCC_IRQHandler" lineNumber="208"/>
+    <functiondecl functionName="EXTI2_IRQHandler" lineNumber="221"/>
+    <functiondecl functionName="DMA1_Channel1_IRQHandler" lineNumber="250"/>
+    <functiondecl functionName="ADC1_IRQHandler" lineNumber="298"/>
+    <functiondecl functionName="TIM3_IRQHandler" lineNumber="311"/>
+    <functiondecl functionName="EXTI15_10_IRQHandler" lineNumber="325"/>
+    <functiondecl functionName="TIM7_IRQHandler" lineNumber="355"/>
+    <functioncall functionName="B1_Pin"/>
+    <functioncall functionName="B2_Pin"/>
+    <functioncall functionName="B3_Pin"/>
+    <functioncall functionName="B4_Pin"/>
+    <functioncall functionName="B5_Pin"/>
+    <functioncall functionName="B6_Pin"/>
+    <functioncall functionName="BUZZER_GPIO_Port"/>
+    <functioncall functionName="BUZZER_Pin"/>
+    <functioncall functionName="HAL_GPIO_EXTI_IRQHandler"/>
+    <functioncall functionName="HAL_GPIO_WritePin"/>
+    <functioncall functionName="HAL_IncTick"/>
+    <functioncall functionName="HAL_RCC_NMI_IRQHandler"/>
+    <functioncall functionName="HAL_TIM_Base_Start_IT"/>
+    <functioncall functionName="HAL_TIM_IRQHandler"/>
+    <functioncall functionName="IDR"/>
+    <functioncall functionName="adcMeanBufferPo"/>
+    <functioncall functionName="adcRmsBufferPo"/>
+    <functioncall functionName="listVAC"/>
+    <functioncall functionName="q15_t"/>
+  </FileInfo>
+</analyzerinfo>

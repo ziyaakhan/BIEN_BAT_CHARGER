@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="6717833372617226942">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;lcd.h&quot; not found." verbose="Include file: &quot;lcd.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcd.c" line="9" column="0"/>
+        </error>
+        <error id="knownConditionTrueFalse" severity="style" msg="Condition &apos;value&gt;=10u&apos; is always true" verbose="Condition &apos;value&gt;=10u&apos; is always true" cwe="571" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcd.c" line="283" column="19" info="Condition &apos;value&gt;=10u&apos; is always true"/>
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\lcd.c" line="277" column="15" info="Assuming condition &apos;value&lt;10u&apos; is false"/>
+        </error>
+  <FileInfo check="ctu">
+<function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="105" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="107" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="109" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="112" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="114" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="121" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="129" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="142" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="180" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:22:13" call-funcname="lcd_send" call-argnr="2" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="187" col="13" call-argexpr="0" call-argvaluetype="0" call-argvalue="0"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:157:6" call-funcname="LCD_Print" call-argnr="1" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="210" col="14" call-argexpr="buf" call-argvaluetype="7" call-argvalue="4"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:157:6" call-funcname="LCD_Print" call-argnr="1" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="240" col="14" call-argexpr="buf" call-argvaluetype="7" call-argvalue="6"/><function-call call-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c:157:6" call-funcname="LCD_Print" call-argnr="1" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/lcd.c" line="289" col="18" call-argexpr="buf" call-argvaluetype="7" call-argvalue="3"/>  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="lcd_delay_us" lineNumber="29"/>
+    <functiondecl functionName="lcd_pulse_enable" lineNumber="44"/>
+    <functiondecl functionName="lcd_write4" lineNumber="55"/>
+    <functiondecl functionName="lcd_send" lineNumber="69"/>
+    <functiondecl functionName="LCD_Backlight" lineNumber="79"/>
+    <functiondecl functionName="LCD_Init" lineNumber="87"/>
+    <functiondecl functionName="LCD_Clear" lineNumber="120"/>
+    <functiondecl functionName="LCD_Home" lineNumber="128"/>
+    <functiondecl functionName="LCD_SetCursor" lineNumber="138"/>
+    <functiondecl functionName="LCD_WriteChar" lineNumber="149"/>
+    <functiondecl functionName="LCD_Print" lineNumber="157"/>
+    <functiondecl functionName="LCD_PrintN" lineNumber="169"/>
+    <functiondecl functionName="LCD_DisplayOn" lineNumber="179"/>
+    <functiondecl functionName="LCD_DisplayOff" lineNumber="186"/>
+    <functiondecl functionName="LCD_PrintUInt8" lineNumber="194"/>
+    <functiondecl functionName="LCD_PrintUInt16" lineNumber="217"/>
+    <functiondecl functionName="LCD_PrintInt16" lineNumber="247"/>
+    <functiondecl functionName="LCD_PrintUInt16_1dp" lineNumber="260"/>
+    <functiondecl functionName="LCD_PrintUInt8_2d" lineNumber="276"/>
+    <functioncall functionName="GPIO_PIN_RESET"/>
+    <functioncall functionName="GPIO_PIN_SET"/>
+    <functioncall functionName="HAL_Delay"/>
+    <functioncall functionName="HAL_GPIO_WritePin"/>
+    <functioncall functionName="LCD_BL_GPIO_Port"/>
+    <functioncall functionName="LCD_BL_Pin"/>
+    <functioncall functionName="LCD_D0_GPIO_Port"/>
+    <functioncall functionName="LCD_D0_Pin"/>
+    <functioncall functionName="LCD_D1_GPIO_Port"/>
+    <functioncall functionName="LCD_D1_Pin"/>
+    <functioncall functionName="LCD_D2_GPIO_Port"/>
+    <functioncall functionName="LCD_D2_Pin"/>
+    <functioncall functionName="LCD_D3_GPIO_Port"/>
+    <functioncall functionName="LCD_D3_Pin"/>
+    <functioncall functionName="LCD_E_GPIO_Port"/>
+    <functioncall functionName="LCD_E_Pin"/>
+    <functioncall functionName="LCD_Print"/>
+    <functioncall functionName="LCD_PrintUInt16"/>
+    <functioncall functionName="LCD_RS_GPIO_Port"/>
+    <functioncall functionName="LCD_RS_Pin"/>
+    <functioncall functionName="LCD_WriteChar"/>
+    <functioncall functionName="lcd_delay_us"/>
+    <functioncall functionName="lcd_pulse_enable"/>
+    <functioncall functionName="lcd_send"/>
+    <functioncall functionName="lcd_write4"/>
+  </FileInfo>
+</analyzerinfo>

@@ -250,33 +250,10 @@ void EXTI2_IRQHandler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-	uint8_t adcChannelCounter = 0;
 	uint16_t dcOffset = 1985;
 
-	adcBuffer[adcChannelCounter] = (q15_t)(((int32_t)(adc1Buffer[adcChannelCounter] - dcOffset)
-			* adcGain[adcChannelCounter]) >> 15);
-	adcChannelCounter++;
-
-	while(adcChannelCounter < ENUM_ADC_CHANNEL_COUNT)
-	{
-		adcBuffer[adcChannelCounter] = (q15_t)(((int32_t)(adc1Buffer[adcChannelCounter]) * adcGain[adcChannelCounter]) >> 15);
-		adcChannelCounter++;
-	}
-	adcChannelCounter = 1;
-	while(adcChannelCounter < ENUM_ADC_CHANNEL_COUNT)
-	{
-		adcMeanSum[adcChannelCounter - 1] = adcMeanSum[adcChannelCounter - 1] - adcMeanBuffer[adcChannelCounter - 1][adcMeanBufferPo];
-		adcMeanBuffer[adcChannelCounter - 1][adcMeanBufferPo] = adcBuffer[adcChannelCounter];
-		adcMeanSum[adcChannelCounter - 1] = adcMeanSum[adcChannelCounter - 1] + adcMeanBuffer[adcChannelCounter - 1][adcMeanBufferPo];
-		adcChannelCounter++;
-	}
-
-	adcMeanBufferPo++;
-	if (adcMeanBufferPo >= ADC_MEAN_BUFFER_SIZE)
-	{
-		adcMeanBufferPo = 0;
-	}
-
+	/* VAC */
+	adcBuffer[listVAC] = (q15_t)(((int32_t)(adc1Buffer[listVAC] - dcOffset) * adcGain[listVAC]) >> 15);
 	adcRmsSum = adcRmsSum - adcRmsBuffer[adcRmsBufferPo];
     adcRmsBuffer[adcRmsBufferPo] = (int32_t)adcBuffer[listVAC] * (int32_t)adcBuffer[listVAC];
 	adcRmsSum = adcRmsSum + adcRmsBuffer[adcRmsBufferPo];
@@ -284,6 +261,50 @@ void DMA1_Channel1_IRQHandler(void)
 	if (adcRmsBufferPo >= ADC_RMS_BUFFER_SIZE)
 	{
 		adcRmsBufferPo = 0;
+	}
+
+	/* TEMP */
+	adcBuffer[listTEMP] = (q15_t)(((int32_t)(adc1Buffer[listTEMP]) * adcGain[listTEMP]) >> 15);
+	adcMeanSum[listTEMP - 1] = adcMeanSum[listTEMP - 1] - adcMeanBuffer[listTEMP - 1][adcMeanBufferPo];
+	adcMeanBuffer[listTEMP - 1][adcMeanBufferPo] = adcBuffer[listTEMP];
+	adcMeanSum[listTEMP - 1] = adcMeanSum[listTEMP - 1] + adcMeanBuffer[listTEMP - 1][adcMeanBufferPo];
+
+	/* IDC */
+	adcBuffer[listIDC] = (q15_t)(((int32_t)(adc1Buffer[listIDC]) * adcGain[listIDC]) >> 15);
+	adcMeanSum[listIDC - 1] = adcMeanSum[listIDC - 1] - adcMeanBuffer[listIDC - 1][adcMeanBufferPo];
+	adcMeanBuffer[listIDC - 1][adcMeanBufferPo] = adcBuffer[listIDC];
+	adcMeanSum[listIDC - 1] = adcMeanSum[listIDC - 1] + adcMeanBuffer[listIDC - 1][adcMeanBufferPo];
+
+	/* VBAT */
+	adcBuffer[listVBAT1] = (q15_t)(((int32_t)(adc1Buffer[listVBAT1]) * adcGain[listVBAT1]) >> 15);
+	adcMeanSum[listVBAT1 - 1] = adcMeanSum[listVBAT1 - 1] - adcMeanBuffer[listVBAT1 - 1][adcMeanBufferPo];
+	adcMeanBuffer[listVBAT1 - 1][adcMeanBufferPo] = adcBuffer[listVBAT1];
+	adcMeanSum[listVBAT1 - 1] = adcMeanSum[listVBAT1 - 1] + adcMeanBuffer[listVBAT1 - 1][adcMeanBufferPo];
+
+	/* VDC1 */
+	adcBuffer[listVDC1] = (q15_t)(((int32_t)(adc1Buffer[listVDC1]) * adcGain[listVDC1]) >> 15);
+	adcMeanSum[listVDC1 - 1] = adcMeanSum[listVDC1 - 1] - adcMeanBuffer[listVDC1 - 1][adcMeanBufferPo];
+	adcMeanBuffer[listVDC1 - 1][adcMeanBufferPo] = adcBuffer[listVDC1];
+	adcMeanSum[listVDC1 - 1] = adcMeanSum[listVDC1 - 1] + adcMeanBuffer[listVDC1 - 1][adcMeanBufferPo];
+
+	/* VDC2 */
+	adcBuffer[listVDC2] = (q15_t)(((int32_t)(adc1Buffer[listVDC2]) * adcGain[listVDC2]) >> 15);
+	adcMeanSum[listVDC2 - 1] = adcMeanSum[listVDC2 - 1] - adcMeanBuffer[listVDC2 - 1][adcMeanBufferPo];
+	adcMeanBuffer[listVDC2 - 1][adcMeanBufferPo] = adcBuffer[listVDC2];
+	adcMeanSum[listVDC2 - 1] = adcMeanSum[listVDC2 - 1] + adcMeanBuffer[listVDC2 - 1][adcMeanBufferPo];
+
+	/* IDC2 */
+	// adcBuffer[listIDC2] = (q15_t)(((int32_t)(adc1Buffer[listIDC2]) * adcGain[listIDC2]) >> 15);
+	adcBuffer[listIDC2] = (q15_t)(int32_t)(adc1Buffer[listIDC2]);
+	adcMeanSum[listIDC2 - 1] = adcMeanSum[listIDC2 - 1] - adcMeanBuffer[listIDC2 - 1][adcMeanBufferPo];
+	adcMeanBuffer[listIDC2 - 1][adcMeanBufferPo] = adcBuffer[listIDC2];
+	adcMeanSum[listIDC2 - 1] = adcMeanSum[listIDC2 - 1] + adcMeanBuffer[listIDC2 - 1][adcMeanBufferPo];
+
+	adcMeanBufferPo++;
+
+	if (adcMeanBufferPo >= ADC_MEAN_BUFFER_SIZE)
+	{
+		adcMeanBufferPo = 0;
 	}
 
   /* USER CODE END DMA1_Channel1_IRQn 0 */

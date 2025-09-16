@@ -261,9 +261,7 @@ void LCD_PrintUInt16_1dp(uint16_t value_times_10) {
     uint16_t integer = value_times_10 / 10u;
     uint16_t frac = value_times_10 % 10u;
     /* Pad to fixed width 4: " 9.0" or "19.4" */
-    if (integer < 10u) {
-        LCD_WriteChar(' ');
-    }
+
     LCD_PrintUInt16(integer);
     LCD_WriteChar('.');
     LCD_WriteChar((char)('0' + frac));

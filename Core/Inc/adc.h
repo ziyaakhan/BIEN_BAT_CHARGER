@@ -40,7 +40,7 @@ extern void adc_init();
 
 extern q15_t adc1Buffer[ADC1_CHANNEL_COUNT];
 extern int16_t adcBuffer[ADC1_CHANNEL_COUNT];
-extern int16_t adcGain[ADC1_CHANNEL_COUNT];
+extern int16_t adcGain[ADC1_CHANNEL_COUNT + 3];
 
 extern q15_t adcMeanBuffer[ADC1_CHANNEL_COUNT][ADC_MEAN_BUFFER_SIZE];
 extern int32_t adcMeanSum[ADC_MEAN_CHANNEL_COUNT];
@@ -56,6 +56,7 @@ extern uint16_t adcIDC;
 extern uint16_t adcVBAT1;
 extern uint16_t adcVDC1;
 extern uint16_t adcVDC2;
+extern uint16_t adcIDC2NoGain;
 extern uint16_t adcIDC2;
 
 #endif /* INC_ADC_H_ */

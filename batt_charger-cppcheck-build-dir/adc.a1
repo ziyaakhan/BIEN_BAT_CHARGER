@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="16177629531412835134">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;adc.h&quot; not found." verbose="Include file: &quot;adc.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\adc.c" line="8" column="0"/>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="adc_init" lineNumber="36"/>
+    <functioncall functionName="ADC1"/>
+    <functioncall functionName="ADC1_CHANNEL_COUNT"/>
+    <functioncall functionName="ADC_MEAN_BUFFER_SIZE"/>
+    <functioncall functionName="ADC_MEAN_CHANNEL_COUNT"/>
+    <functioncall functionName="ADC_RMS_BUFFER_SIZE"/>
+    <functioncall functionName="DMA1"/>
+    <functioncall functionName="LL_ADC_DMA_GetRegAddr"/>
+    <functioncall functionName="LL_ADC_DMA_REG_REGULAR_DATA"/>
+    <functioncall functionName="LL_ADC_Enable"/>
+    <functioncall functionName="LL_ADC_REG_StartConversionSWStart"/>
+    <functioncall functionName="LL_DMA_CHANNEL_1"/>
+    <functioncall functionName="LL_DMA_DIRECTION_PERIPH_TO_MEMORY"/>
+    <functioncall functionName="LL_DMA_DisableChannel"/>
+    <functioncall functionName="LL_DMA_EnableChannel"/>
+    <functioncall functionName="LL_DMA_EnableIT_TC"/>
+    <functioncall functionName="LL_DMA_MDATAALIGN_HALFWORD"/>
+    <functioncall functionName="LL_DMA_MEMORY_INCREMENT"/>
+    <functioncall functionName="LL_DMA_MODE_CIRCULAR"/>
+    <functioncall functionName="LL_DMA_PDATAALIGN_HALFWORD"/>
+    <functioncall functionName="LL_DMA_PERIPH_NOINCREMENT"/>
+    <functioncall functionName="LL_DMA_SetDataLength"/>
+    <functioncall functionName="LL_DMA_SetDataTransferDirection"/>
+    <functioncall functionName="LL_DMA_SetMemoryAddress"/>
+    <functioncall functionName="LL_DMA_SetMemoryIncMode"/>
+    <functioncall functionName="LL_DMA_SetMemorySize"/>
+    <functioncall functionName="LL_DMA_SetMode"/>
+    <functioncall functionName="LL_DMA_SetPeriphAddress"/>
+    <functioncall functionName="LL_DMA_SetPeriphIncMode"/>
+    <functioncall functionName="LL_DMA_SetPeriphSize"/>
+    <functioncall functionName="Q15"/>
+    <functioncall functionName="listIDC"/>
+    <functioncall functionName="listIDC2"/>
+    <functioncall functionName="listTEMP"/>
+    <functioncall functionName="listVAC"/>
+    <functioncall functionName="listVBAT1"/>
+    <functioncall functionName="listVDC1"/>
+    <functioncall functionName="listVDC2"/>
+  </FileInfo>
+</analyzerinfo>

@@ -66,6 +66,31 @@ static const char * const LABELS_EN_SHORT[4] = { "I Out:", "V Out:", "Line:", "T
 static const char * const LABELS_TR_SHORT[4] = { "Cikis I:", "Cikis V:", "Sebeke:", "Sic:" };
 /**@}*/
 
+/** @name Short labels for charge stages (fit at right side of LCD) */
+/**@{*/
+static const char * const STAGE_EN_SHORT[] = {
+	/* STATE_BULK */		  "BULK",
+	/* STATE_BATTERY_SAFE */  "SAFE",
+	/* STATE_ABSORPTION */	  "ABS",
+	/* STATE_EQUALIZATION */  "EQL",
+	/* STATE_FLOAT */		  "FLOAT",
+	/* STATE_STORAGE */	  "STORE",
+	/* STATE_REFRESH */	  "RFRSH"
+};
+
+static const char * const STAGE_TR_SHORT[] = {
+	/* STATE_BULK */		  "BULK",
+	/* STATE_BATTERY_SAFE */  "GUVEN",
+	/* STATE_ABSORPTION */	  "ABSOR",
+	/* STATE_EQUALIZATION */  "ESIT",
+	/* STATE_FLOAT */		  "FLOAT",
+	/* STATE_STORAGE */	  "DEPO",
+	/* STATE_REFRESH */	  "YENIL"
+};
+
+static const char * const * STAGE_NAMES_LANG[2] = { STAGE_EN_SHORT, STAGE_TR_SHORT };
+/**@}*/
+
 /* String table keys for i18n */
 typedef enum {
     UI_STR_MENU_TITLE = 0,
@@ -234,9 +259,12 @@ void lcd_menu_set_page(uint8_t page) {
  * @param lang_id Language ID (0: English, 1: Turkish)
  */
 void lcd_menu_set_language(uint8_t lang_id) {
-    if (lang_id != 0u) {
+    if (lang_id != 0u)
+    {
         lcdLangId = 1u;
-    } else {
+    }
+    else
+    {
         lcdLangId = 0u;
     }
     ui_assign_language();
@@ -247,23 +275,28 @@ void lcd_menu_set_language(uint8_t lang_id) {
  * @brief Handle LCD display rendering
  * @details Renders the current page based on pageID and language
  */
-void lcd_handle(void) {
+void lcd_handle(void)
+{
     /* Clear once when page changes or explicitly requested */
-    if (pageID != prevPageID || uiNeedsClear) {
+    if (pageID != prevPageID || uiNeedsClear)
+    {
         LCD_Clear();
         prevPageID = pageID;
         uiNeedsClear = 0;
     }
 
     /* Ensure language strings are assigned even if init wasn't called */
-    if (STR_BATV == 0 || STR_CAPACITY == 0 || STR_COUNT == 0) {
+    if (STR_BATV == 0 || STR_CAPACITY == 0 || STR_COUNT == 0)
+    {
         ui_assign_language();
     }
 
     /* Edit mode is entered with Right press in button_handle; no long-press */
 
-    switch(pageID) {
-    case PAGE_LOADING: {
+    switch(pageID)
+    {
+    case PAGE_LOADING:
+    {
         /* Dynamic line 2 content per operating mode */
         LCD_SetCursor(0, 0); 
 		LCD_Print(STR_LOAD_BORDER_TOP);
@@ -307,9 +340,11 @@ void lcd_handle(void) {
         {
             char line[21];
             int idx = 0;
-            const char *a = companyName; while (*a && idx < 20) line[idx++] = *a++;
+            const char *a = companyName;
+            while (*a && idx < 20) line[idx++] = *a++;
             if (idx < 20) line[idx++] = ' ';
-            const char *b = titleShort; while (*b && idx < 20) line[idx++] = *b++;
+            const char *b = titleShort;
+            while (*b && idx < 20) line[idx++] = *b++;
             while (idx < 20) line[idx++] = ' ';
             line[20] = '\0';
             LCD_Print(line);
@@ -330,10 +365,30 @@ void lcd_handle(void) {
         /* Status moved one row down: right side of row 1 */
         {
             LCD_SetCursor(STATUS_COL, 1);
-            if (HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET) {
+            if (HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET)
+            {
                 LCD_Print(ui_get(UI_STR_OPEN));
-            } else {
+            }
+            else
+            {
                 LCD_Print(ui_get(UI_STR_CLOSE));
+            }
+        }
+
+        /* If charger and output is on, show charge state under the status */
+        {
+            LCD_SetCursor(STATUS_COL, 2);
+            if (operatingMode == MODE_CHARGER && HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET)
+            {
+                /* clear previous content and print stage */
+                LCD_Print("       ");
+                LCD_SetCursor(STATUS_COL, 2);
+                LCD_Print(STAGE_NAMES_LANG[lcdLangId][batInfo.chargeState]);
+            }
+            else
+            {
+                /* clear area under status when not applicable */
+                LCD_Print("       ");
             }
         }
 
@@ -357,9 +412,11 @@ void lcd_handle(void) {
         LCD_SetCursor(1, 0);
         {
             const char *t = title;
-            while (*t) {
+            while (*t)
+            {
                 char c = *t++;
-                if (c >= 'a' && c <= 'z') {
+                if (c >= 'a' && c <= 'z')
+                {
                     c = (char)(c - 'a' + 'A');
                 }
                 LCD_WriteChar(c);
@@ -418,18 +475,19 @@ void lcd_handle(void) {
             uint8_t next = (uint8_t)((sel + 1u) % total);
             /* row1 prev */
             LCD_SetCursor(1,1);
-            if (prev == 0) { 
+            if (prev == 0)
+            {
                 LCD_Print(STR_BATV);
                 {
                     uint16_t batv;
-                    if (batInfo.batteryVoltage >= 24u)
-                    {
-                        batv = 24u;
-                    }
-                    else
-                    {
-                        batv = 12u;
-                    }
+                if (batInfo.batteryVoltage >= 24u)
+                {
+                    batv = 24u;
+                }
+                else
+                {
+                    batv = 12u;
+                }
                     LCD_PrintUInt16(batv);
                     LCD_WriteChar('V');
                 }
@@ -440,19 +498,23 @@ void lcd_handle(void) {
 				LCD_PrintUInt16_1dp(batInfo.batteryCap);
 				LCD_Print("Ah"); 
 			}
-            else if (prev == 2) {
+            else if (prev == 2)
+            {
                 LCD_Print(STR_COUNT);
                 LCD_PrintUInt16(batInfo.numberOfBattery);
             }
-            else if (prev == 3) {
+            else if (prev == 3)
+            {
                 LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
                 LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
-            else if (prev == 4) {
+            else if (prev == 4)
+            {
                 LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
                 LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
-            else /* prev == 5 */ {
+            else /* prev == 5 */
+            {
                 LCD_Print(ui_get(UI_STR_EQUALIZE));
                 LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
@@ -468,81 +530,106 @@ void lcd_handle(void) {
                     LCD_PrintUInt16(batv);
                     LCD_WriteChar('V');
                 }
-            } else if (sel == 1) {
+            }
+            else if (sel == 1)
+            {
                 LCD_Print(STR_CAPACITY);
                 if (isEditing) LCD_WriteChar('[');
                 LCD_PrintUInt16_1dp(batInfo.batteryCap);
                 if (isEditing) LCD_WriteChar(']');
                 LCD_Print("Ah");
-            } else if (sel == 2) {
+            }
+            else if (sel == 2)
+            {
                 LCD_Print(STR_COUNT);
                 if (isEditing) LCD_WriteChar('[');
                 LCD_PrintUInt16(batInfo.numberOfBattery);
                 if (isEditing) LCD_WriteChar(']');
-            } else if (sel == 3) {
+            }
+            else if (sel == 3)
+            {
                 LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
                 LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            } else if (sel == 4) {
+            }
+            else if (sel == 4)
+            {
                 LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
                 LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            } else /* sel == 5 */ {
+            }
+            else /* sel == 5 */
+            {
                 LCD_Print(ui_get(UI_STR_EQUALIZE));
                 LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             /* row3 next */
             LCD_SetCursor(1,3);
-            if (next == 0) { 
+            if (next == 0)
+            {
                 LCD_Print(STR_BATV);
                 { 
                     uint16_t batv; 
-                    if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; } 
+                    if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; }
                     LCD_PrintUInt16(batv);
                     LCD_WriteChar('V');
                 } 
             }
-            else if (next == 1) { 
+            else if (next == 1)
+            {
                 LCD_Print(STR_CAPACITY);
                 LCD_PrintUInt16_1dp(batInfo.batteryCap);
                 LCD_Print("Ah"); 
             }
-            else if (next == 2) {
+            else if (next == 2)
+            {
                 LCD_Print(STR_COUNT);
                 LCD_PrintUInt16(batInfo.numberOfBattery);
             }
-            else if (next == 3) {
+            else if (next == 3)
+            {
                 LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
                 LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
-            else if (next == 4) {
+            else if (next == 4)
+            {
                 LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
                 LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
-            else /* next == 5 */ {
+            else /* next == 5 */
+            {
                 LCD_Print(ui_get(UI_STR_EQUALIZE));
                 LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
-        } else {
+        }
+        else
+        {
             uint8_t total = 2u; /* V set, I max */
             uint8_t sel = (uint8_t)(subIndex % total);
             /* row1: blank if at top, else previous item */
             LCD_SetCursor(0,1);
             if (sel == 0) {
                 LCD_Print("                    ");
-            } else {
+            }
+            else
+            {
                 LCD_SetCursor(1,1);
-                LCD_Print("V set:"); LCD_PrintUInt16_1dp(outputVSet_dV); LCD_WriteChar('V');
+                LCD_Print("V set:");
+                LCD_PrintUInt16_1dp(outputVSet_dV);
+                LCD_WriteChar('V');
             }
             /* row2: selected */
             LCD_SetCursor(0,2);
             LCD_WriteChar('>');
             LCD_SetCursor(1,2);
-            if (sel == 0) {
+            if (sel == 0)
+            {
                 LCD_Print("V set:");
                 if (isEditing) LCD_WriteChar('[');
                 LCD_PrintUInt16_1dp(outputVSet_dV);
                 if (isEditing) LCD_WriteChar(']');
                 LCD_WriteChar('V');
-            } else {
+            }
+            else
+            {
                 LCD_Print("I max:");
                 if (isEditing) LCD_WriteChar('[');
                 LCD_PrintUInt16_1dp(outputIMax_dA);
@@ -553,9 +640,13 @@ void lcd_handle(void) {
             LCD_SetCursor(0,3);
             if (sel == (uint8_t)(total-1u)) {
                 LCD_Print("                    ");
-            } else {
+            }
+            else
+            {
                 LCD_SetCursor(1,3);
-                LCD_Print("I max:"); LCD_PrintUInt16_1dp(outputIMax_dA); LCD_WriteChar(CH_CURR);
+                LCD_Print("I max:");
+                LCD_PrintUInt16_1dp(outputIMax_dA);
+                LCD_WriteChar(CH_CURR);
             }
         }
     }
@@ -582,7 +673,9 @@ void lcd_handle(void) {
             LCD_SetCursor(0,1);
             if (sel == 0) {
                 LCD_Print("                    ");
-            } else {
+            }
+            else
+            {
                 LCD_SetCursor(1,1);
                 LCD_Print("Test V:");
                 LCD_PrintUInt16_1dp(testVoltage_dV);
@@ -604,7 +697,9 @@ void lcd_handle(void) {
                     LCD_WriteChar(']');
                 }
                 LCD_WriteChar('V');
-            } else {
+            }
+            else
+            {
                 LCD_Print("Test I:");
                 if (isEditing)
                 {
@@ -619,15 +714,20 @@ void lcd_handle(void) {
             }
             /* Row3: next or blank if at bottom */
             LCD_SetCursor(0,3);
-            if (sel == (uint8_t)(total-1u)) {
+            if (sel == (uint8_t)(total-1u))
+            {
                 LCD_Print("                    ");
-            } else {
+            }
+            else
+            {
                 LCD_SetCursor(1,3);
                 LCD_Print("Test I:");
                 LCD_PrintUInt16_1dp(testCurrent_dA);
                 LCD_WriteChar(CH_CURR);
             }
-        } else {
+        }
+        else
+        {
             /* Only one item, keep it on row2 with marker; clear rows 1 and 3 */
             LCD_SetCursor(0,1);
             LCD_Print("                    ");
@@ -635,9 +735,11 @@ void lcd_handle(void) {
             LCD_WriteChar('>');
             LCD_SetCursor(1,2);
             LCD_Print(ui_get(UI_STR_SHORT_TEST)); 
-			if (shortCircuitTest) {
+			if (shortCircuitTest)
+			{
 				LCD_Print(ui_get(UI_STR_OPEN));
-			} else {
+			} else
+			{
 				LCD_Print(ui_get(UI_STR_CLOSE));
 			}
             LCD_SetCursor(0,3);
@@ -923,12 +1025,15 @@ void button_handle(void) {
     if (buttonState & BUT_ON_M) {
         HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, GPIO_PIN_SET);
         deviceOn = 1;
+        batInfo.chargeState = STATE_BULK;
     }
     /* Off: set SHUTDOWN2 = 0 (same on all pages) 
 	*/
     if (buttonState & BUT_OFF_M) {
         HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, GPIO_PIN_RESET);
         deviceOn = 0;
+        dacValueI = 0;
+        dacValueV = 0;
     }
 
     /* Up/Down behavior depends on page */
@@ -947,12 +1052,12 @@ void button_handle(void) {
             if (operatingMode == MODE_CHARGER) {
                 if (buttonState & BUT_UP_M) {
                     if (subIndex == 0) { batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u; }
-                    else if (subIndex == 1 && batInfo.batteryCap < 999) { batInfo.batteryCap++; }
+                    else if (subIndex == 1 && batInfo.batteryCap < 990) { batInfo.batteryCap += 10; }
                     else if (subIndex == 2 && batInfo.numberOfBattery < 24) { batInfo.numberOfBattery++; }
                 }
                 if (buttonState & BUT_DOWN_M) {
                     if (subIndex == 0) { batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u; }
-                    else if (subIndex == 1 && batInfo.batteryCap > 1) { batInfo.batteryCap--; }
+                    else if (subIndex == 1 && batInfo.batteryCap > 9) { batInfo.batteryCap -= 10; }
                     else if (subIndex == 2 && batInfo.numberOfBattery > 1) { batInfo.numberOfBattery--; }
                 }
             } else { /* MODE_SUPPLY */

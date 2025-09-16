@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="4835959161934880011">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;stm32f1xx.h&quot; not found." verbose="Include file: &quot;stm32f1xx.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\system_stm32f1xx.c" line="58" column="0"/>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+    <functioncall functionName="RESET"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+    <functiondecl functionName="SystemInit_ExtMemCtl" lineNumber="349"/>
+    <functioncall functionName="AHBENR"/>
+    <functioncall functionName="APB2ENR"/>
+    <functioncall functionName="RCC_AHBENR_FSMCEN"/>
+    <functioncall functionName="RCC_APB2ENR_IOPDEN"/>
+    <functioncall functionName="READ_BIT"/>
+    <functioncall functionName="SystemInit_ExtMemCtl"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+    <functioncall functionName="RESET"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+    <functioncall functionName="RESET"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+  </FileInfo>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;prediv1factor&apos; is assigned a value that is never used." verbose="Variable &apos;prediv1factor&apos; is assigned a value that is never used." cwe="563" file0="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/system_stm32f1xx.c">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\system_stm32f1xx.c" line="229" column="32"/>
+            <symbol>prediv1factor</symbol>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+    <functioncall functionName="RESET"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="SystemInit" lineNumber="175"/>
+    <functiondecl functionName="SystemCoreClockUpdate" lineNumber="224"/>
+    <functioncall functionName="RESET"/>
+  </FileInfo>
+</analyzerinfo>

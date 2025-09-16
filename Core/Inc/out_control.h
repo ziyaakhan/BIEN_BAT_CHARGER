@@ -13,7 +13,7 @@
 #include "lcdMenu.h"  /* for OperatingMode enum */
 
 #define PID_VOUT_KP 15000
-#define PID_VOUT_KI 150
+#define PID_VOUT_KI 0
 #define PID_VOUT_KD 0
 
 #define PID_VOUT_OUT_MAX  200 //2000
@@ -22,15 +22,16 @@
 #define PID_VOUT_INT_MAX  2000 //2000
 #define PID_VOUT_INT_MIN -2000 //0
 //-------------------------//
-#define PID_IOUT_KP Q15(1)
-#define PID_IOUT_KI Q15(0.05)
-#define PID_IOUT_KD Q15(0)
+#define PID_IOUT_KP 10000
+#define PID_IOUT_KI 0
+
+#define PID_IOUT_KD 0
 
 #define PID_IOUT_OUT_MAX  200 //2000
 #define PID_IOUT_OUT_MIN -200 //0
 
-#define PID_IOUT_INT_MAX  2000 //2000
-#define PID_IOUT_INT_MIN -2000 //0
+#define PID_IOUT_INT_MAX  1 //2000
+#define PID_IOUT_INT_MIN -1 //0
 
 /* Control parameters exposed to other modules */
 extern OperatingMode operatingMode;     /* MODE_CHARGER / MODE_SUPPLY */
@@ -105,5 +106,6 @@ extern PIDController pidVout;
 extern PIDController pidIout;
 
 extern int PID_Compute(PIDController *pid, unsigned long setpoint, unsigned long measured);
+extern void outCalculation();
 
 #endif /* INC_OUT_CONTROL_H_ */

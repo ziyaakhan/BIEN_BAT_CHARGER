@@ -29,9 +29,10 @@ uint16_t adcIDC = 0;
 uint16_t adcVBAT1 = 0;
 uint16_t adcVDC1 = 0;
 uint16_t adcVDC2 = 0;
+uint16_t adcIDC2NoGain = 0;
 uint16_t adcIDC2 = 0;
 
-int16_t adcGain[ADC1_CHANNEL_COUNT];
+int16_t adcGain[ADC1_CHANNEL_COUNT + 3];
 
 void adc_init(void)
 {
@@ -41,7 +42,10 @@ void adc_init(void)
 	adcGain[listVBAT1] = 2490;
 	adcGain[listVDC1]  = Q15(1);
 	adcGain[listVDC2]  = Q15(1);
-	adcGain[listIDC2]  = 2500;
+	adcGain[listIDC2]  = 15000;
+	adcGain[listIDC2 + 1]  = 4000;
+	adcGain[listIDC2 + 2]  = 3300;
+	adcGain[listIDC2 + 3]  = 2575;
 
     LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_1);
     LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_1,

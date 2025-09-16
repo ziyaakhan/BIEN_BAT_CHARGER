@@ -1,0 +1,16 @@
+NMI_Handler call:[HAL_RCC_NMI_IRQHandler]
+HardFault_Handler
+MemManage_Handler
+BusFault_Handler
+UsageFault_Handler
+SVC_Handler
+DebugMon_Handler
+PendSV_Handler
+SysTick_Handler call:[HAL_IncTick] noreturn:[HAL_IncTick]
+RCC_IRQHandler
+EXTI2_IRQHandler global:[htim7] call:[HAL_GPIO_EXTI_IRQHandler,HAL_GPIO_WritePin,HAL_TIM_Base_Start_IT] noreturn:[HAL_GPIO_WritePin]
+DMA1_Channel1_IRQHandler
+ADC1_IRQHandler
+TIM3_IRQHandler global:[htim3] call:[HAL_TIM_IRQHandler] noreturn:[HAL_TIM_IRQHandler]
+EXTI15_10_IRQHandler global:[htim7] call:[HAL_GPIO_EXTI_IRQHandler,HAL_GPIO_WritePin,HAL_TIM_Base_Start_IT] noreturn:[HAL_GPIO_WritePin]
+TIM7_IRQHandler global:[htim7] call:[HAL_GPIO_WritePin,HAL_TIM_IRQHandler] noreturn:[HAL_TIM_IRQHandler]

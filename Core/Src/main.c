@@ -54,8 +54,8 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint16_t dacValueV = 0;
-uint16_t dacValueI = 4095;
+int16_t dacValueV = 0;
+int16_t dacValueI = 0;
 uint8_t mainCounter = 0;
 /* USER CODE END PV */
 
@@ -131,8 +131,8 @@ int main(void)
   HAL_GPIO_WritePin(SHUTDOWN1_GPIO_Port, SHUTDOWN1_Pin, 0);
   HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, 0);
 
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dacValueI);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);
 
 
   pageID = 0;
@@ -167,7 +167,27 @@ int main(void)
 		  mainCounter++;
 		  break;
 	  case 5:
-		  adcIDC2 = adcMeanSum[listIDC2 - 1] >> SAMPLE_2N ;
+		  adcIDC2NoGain = adcMeanSum[listIDC2 - 1] >> SAMPLE_2N ;
+		  if(adcIDC2NoGain <= 50)
+		  {
+			  adcIDC2 = (q15_t)(((int32_t)(adcIDC2NoGain) * adcGain[listIDC2]) >> 15);
+		  }
+
+		  else if(adcIDC2NoGain <= 150)
+		  {
+			  adcIDC2 = (q15_t)(((int32_t)(adcIDC2NoGain) * adcGain[listIDC2 + 1]) >> 15);
+		  }
+
+		  else if(adcIDC2NoGain <= 350)
+		  {
+			  adcIDC2 = (q15_t)(((int32_t)(adcIDC2NoGain) * adcGain[listIDC2 + 2]) >> 15);
+		  }
+
+		  else if(adcIDC2NoGain > 350)
+		  {
+			  adcIDC2 = (q15_t)(((int32_t)(adcIDC2NoGain) * adcGain[listIDC2 + 3]) >> 15);
+		  }
+
 		  mainCounter++;
 		  break;
 	  case 6:
@@ -175,26 +195,21 @@ int main(void)
 		  mainCounter++;
 		  break;
 	  case 7:
+		  if(deviceOn == 1)
+		  {
+			  outCalculation();
+		  }
+	  case 8:
 		  lcd_handle();
 		  mainCounter++;
 		  break;
-	  case 8:
+	  case 9:
 		  button_handle();
 		  mainCounter++;
 		  break;
 	  default:
 		  mainCounter = 0;
 		  break;
-	  }
-
-	  if(deviceOn == 1)
-	  {
-		  dacValueV +=PID_Compute(&pidVout, batInfo.floatVoltage, adcBuffer[listVBAT1]);
-		  if(dacValueV > 4095)
-		  {
-			  dacValueV = 4095;
-		  }
-		  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dacValueV);
 	  }
 
     /* USER CODE END WHILE */

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="9997297047055584047">
+        <error id="missingInclude" severity="information" msg="Include file: &quot;out_control.h&quot; not found." verbose="Include file: &quot;out_control.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\out_control.c" line="8" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;adc.h&quot; not found." verbose="Include file: &quot;adc.h&quot; not found.">
+            <location file="C:\Users\Ziya\STM32CubeIDE\workspace_1.15.1\BAT_CHARGER\Core\Src\out_control.c" line="9" column="0"/>
+        </error>
+  <FileInfo check="Null pointer">
+    <unsafe-usage my-id="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/out_control.c:89:5" my-argnr="1" my-argname="pid" file="C:/Users/Ziya/STM32CubeIDE/workspace_1.15.1/BAT_CHARGER/Core/Src/out_control.c" line="91" col="5" value="0"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="PID_Compute" lineNumber="89"/>
+    <functioncall functionName="MODE_CHARGER"/>
+    <functioncall functionName="PID_IOUT_KD"/>
+    <functioncall functionName="PID_IOUT_KI"/>
+    <functioncall functionName="PID_IOUT_KP"/>
+    <functioncall functionName="PID_IOUT_OUT_MAX"/>
+    <functioncall functionName="PID_IOUT_OUT_MIN"/>
+    <functioncall functionName="PID_VOUT_INT_MAX"/>
+    <functioncall functionName="PID_VOUT_INT_MIN"/>
+    <functioncall functionName="PID_VOUT_KD"/>
+    <functioncall functionName="PID_VOUT_KI"/>
+    <functioncall functionName="PID_VOUT_KP"/>
+    <functioncall functionName="PID_VOUT_OUT_MAX"/>
+    <functioncall functionName="PID_VOUT_OUT_MIN"/>
+    <functioncall functionName="STATE_BULK"/>
+  </FileInfo>
+</analyzerinfo>
