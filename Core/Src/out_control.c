@@ -175,7 +175,7 @@ void outCalculation()
 
 			  if(batInfo.absorptionFinishCurrent > adcIDC2)
 			  {
-				  batInfo.chargeState = STATE_FLOAT;
+				//  batInfo.chargeState = STATE_FLOAT;
 			  }
 			  break;
 		}

@@ -40,7 +40,7 @@ void adc_init(void)
 	adcGain[listVAC]   = 9100;
 	adcGain[listTEMP]  = Q15(1);
 	adcGain[listIDC]   = 2500;
-	adcGain[listVBAT1] = 1750;
+	adcGain[listVBAT1] = 2500;
 	adcGain[listVDC1]  = Q15(1);
 	adcGain[listVDC2]  = Q15(1);
 	adcGain[listIDC2]  = 15000;

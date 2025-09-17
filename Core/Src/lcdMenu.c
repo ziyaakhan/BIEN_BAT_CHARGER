@@ -29,10 +29,13 @@ static uint32_t rightPressStartMs = 0; /**< Right button hold start (ms), 0 if n
 uint8_t mfgPinError = 0;     /**< 1 if last PIN attempt was wrong */
 static uint32_t mfgPinErrorUntilMs = 0; /**< millis until which error is shown */
 static uint16_t editBackupValue = 0;    /**< backup for numeric edits */
+/* Gain edit state (manufacturer gain page) */
+static uint8_t gainEditDigits[5] = {0,0,0,0,0};
+static uint8_t gainEditPos = 0;
 
 /* UI-only parameters and PIN state */
 uint8_t brightness = 50;         /**< 0..100 */
-uint16_t mfgPinCode = 0;         /**< Default 0000 */
+uint16_t mfgPinCode = MFG_MENU_PIN;         /**< Default set by macro */
 uint8_t mfgPinInput[4] = {0,0,0,0};
 uint8_t mfgPinPos = 0;           /**< PIN cursor 0..3 */
 /**@}*/
@@ -118,7 +121,12 @@ typedef enum {
     UI_STR_LEFT_EXIT,
     UI_STR_SAFE_CHARGE,
     UI_STR_SOFT_CHARGE,
-    UI_STR_EQUALIZE
+    UI_STR_EQUALIZE,
+    UI_STR_MFG_COMPANY,
+    UI_STR_MFG_GAIN,
+    UI_STR_MFG_OFFSET,
+    UI_STR_MFG_LIMITS,
+    UI_STR_MFG_MODE
 } UiStrId;
 
 static const char * const UI_STR_EN[] = {
@@ -147,13 +155,18 @@ static const char * const UI_STR_EN[] = {
     [UI_STR_LEFT_EXIT]     = "Left to exit",
     [UI_STR_SAFE_CHARGE]   = "Safe:",
     [UI_STR_SOFT_CHARGE]   = "Soft:",
-    [UI_STR_EQUALIZE]      = "Equalize:"
+    [UI_STR_EQUALIZE]      = "Equalize:",
+    [UI_STR_MFG_COMPANY]   = "Company name",
+    [UI_STR_MFG_GAIN]      = "Gain",
+    [UI_STR_MFG_OFFSET]    = "Offset",
+    [UI_STR_MFG_LIMITS]    = "Max/Min values",
+    [UI_STR_MFG_MODE]      = "Device mode"
 };
 
 static const char * const UI_STR_TR[] = {
     [UI_STR_MENU_TITLE]    = "Menu",
     [UI_STR_ENTER_DATA]    = "Verileri Gir",
-    [UI_STR_OUTPUT_CONTROL]= "Cikis Kontrol",
+    [UI_STR_OUTPUT_CONTROL]= "Aku kontrol",
     [UI_STR_OPERATING_MODE]= "Calisma Modu",
     [UI_STR_SETTINGS]      = "Ayarlar",
     [UI_STR_TEST_V]        = "Test V:",
@@ -166,7 +179,7 @@ static const char * const UI_STR_TR[] = {
     [UI_STR_ENTER_PIN]     = "PIN GIR",
     [UI_STR_WRONG_PIN]     = "YANLIS PIN",
     [UI_LBL_BATV]          = "Aku V:",
-    [UI_LBL_CAPACITY]      = "Kapasite:",
+    [UI_LBL_CAPACITY]      = "Toplam AH:",
     [UI_LBL_COUNT]         = "Sayi:",
     [UI_STR_OPEN]          = "Acik",
     [UI_STR_CLOSE]         = "Kapali",
@@ -176,7 +189,12 @@ static const char * const UI_STR_TR[] = {
     [UI_STR_LEFT_EXIT]     = "Sol cikis",
     [UI_STR_SAFE_CHARGE]   = "Guvenli Sarj:",
     [UI_STR_SOFT_CHARGE]   = "Soft Sarj:",
-    [UI_STR_EQUALIZE]      = "V esitleme:"
+    [UI_STR_EQUALIZE]      = "V esitleme:",
+    [UI_STR_MFG_COMPANY]   = "Firma ismi",
+    [UI_STR_MFG_GAIN]      = "Kazanc",
+    [UI_STR_MFG_OFFSET]    = "Offset",
+    [UI_STR_MFG_LIMITS]    = "Max/Min degerler",
+    [UI_STR_MFG_MODE]      = "Cihaz calisma modu"
 };
 
 static const char * const * UI_STR_TABLE[2] = { UI_STR_EN, UI_STR_TR };
@@ -196,7 +214,26 @@ static uint8_t TEMP_COL = 11u;
 
 /* Menu title and items (defined here so ui_assign_language can reference them) */
 static const char * const MENU_ITEMS_EN[4] = { "Enter Data", "Output Control", "Operating Mode", "Settings" };
-static const char * const MENU_ITEMS_TR[4] = { "Verileri Gir", "Cikis Kontrol", "Calisma Modu", "Ayarlar" };
+static const char * const MENU_ITEMS_TR[4] = { "Verileri Gir", "Aku kontrol", "Calisma Modu", "Ayarlar" };
+
+/* Mode-dependent TR menu labels via pointer-to-pointer (no ifs in render) */
+static const char * const MENU_ITEMS_TR_CHARGER[4] = { "Verileri Gir", "Aku kontrol", "Calisma Modu", "Ayarlar" };
+static const char * const MENU_ITEMS_TR_SUPPLY[4]  = { "Verileri Gir", "Cikis Kontrol", "Calisma Modu", "Ayarlar" };
+static const char * const * const MENU_ITEMS_LANG_MODE[2][2] = {
+    /* EN: both modes identical */
+    { MENU_ITEMS_EN, MENU_ITEMS_EN },
+    /* TR: charger vs supply differ at index 1 */
+    { MENU_ITEMS_TR_CHARGER, MENU_ITEMS_TR_SUPPLY }
+};
+
+/* Output control page title and single-item label via pointer tables */
+static const char * const OUTCTL_TITLE_EN[2] = { "Output Control", "Output Control" };
+static const char * const OUTCTL_TITLE_TR[2] = { "Aku kontrol", "Cikis Kontrol" };
+static const char * const * const OUTCTL_TITLE_LANG[2] = { OUTCTL_TITLE_EN, OUTCTL_TITLE_TR };
+
+static const char * const OUTCTL_ITEM_EN[2] = { "Battery Current Test", "Short test" };
+static const char * const OUTCTL_ITEM_TR[2] = { "Aku Akim Testi", "Kisa devre testi" };
+static const char * const * const OUTCTL_ITEM_LANG[2] = { OUTCTL_ITEM_EN, OUTCTL_ITEM_TR };
 
 static inline const char * ui_get(UiStrId id)
 {
@@ -353,12 +390,28 @@ void lcd_handle(void)
         /* Row 1 (index 1): Iout / Cikis I */
 		LCD_SetCursor(0, 1);
         LCD_Print(labelsShort[0]);
+        {
+            /* Clear previous numeric+unit area (handle shrinking values) */
+            const char *ls0 = labelsShort[0];
+            uint8_t n0 = 0; while (ls0[n0] && n0 < 20) n0++;
+            LCD_SetCursor(n0, 1);
+            LCD_Print("       "); /* 7 spaces */
+            LCD_SetCursor(n0, 1);
+        }
         LCD_PrintUInt16_1dp(adcIDC2);
         LCD_WriteChar(CH_CURR);
 
         /* Row 2 (index 2): Vout / Cikis V */
 		LCD_SetCursor(0, 2);
         LCD_Print(labelsShort[1]);
+        {
+            /* Clear previous numeric+unit area to avoid artifacts like double 'V' */
+            const char *ls1 = labelsShort[1];
+            uint8_t n1 = 0; while (ls1[n1] && n1 < 20) n1++;
+            LCD_SetCursor(n1, 2);
+            LCD_Print("       "); /* 7 spaces */
+            LCD_SetCursor(n1, 2);
+        }
         LCD_PrintUInt16_1dp(adcVBAT1);
         LCD_WriteChar('V');
 
@@ -395,10 +448,24 @@ void lcd_handle(void)
         /* Row 3: Mains/Sebeke and Temp/Sic split across the line */
 		LCD_SetCursor(0, 3);
         LCD_Print(labelsShort[2]); /* Sebeke/Mains */
+        {
+            const char *ls2 = labelsShort[2];
+            uint8_t n2 = 0; while (ls2[n2] && n2 < 20) n2++;
+            LCD_SetCursor(n2, 3);
+            LCD_Print("       ");
+            LCD_SetCursor(n2, 3);
+        }
         LCD_PrintUInt16(adcVAC);
         LCD_WriteChar('V');
         LCD_SetCursor(TEMP_COL, 3);
         LCD_Print(labelsShort[3]); /* Temp/Sic */
+        {
+            /* Clear area before temp number */
+            uint8_t n3 = (uint8_t)(TEMP_COL + 5u);
+            LCD_SetCursor(TEMP_COL + 5u, 3); /* rough clear width */
+            LCD_Print("     ");
+            LCD_SetCursor(TEMP_COL + 5u, 3);
+        }
         LCD_PrintUInt16(temp);
         LCD_WriteChar('C');
     }
@@ -406,7 +473,7 @@ void lcd_handle(void)
 
     case PAGE_MENU: {
         const char * title = ui_get(UI_STR_MENU_TITLE);
-        const char * const * items = STR_MENU_ITEMS;
+        const char * const * items = MENU_ITEMS_LANG_MODE[lcdLangId][operatingMode];
 
         /* Title (uppercase) */
         LCD_SetCursor(1, 0);
@@ -469,54 +536,32 @@ void lcd_handle(void)
         }
         /* Scrolling list with centered '>' at row 2 */
         if (operatingMode == MODE_CHARGER) {
-            uint8_t total = 6u; /* BatV, Capacity, Count, Safe, Soft, Equalize */
+            uint8_t total = 2u; /* BatV, Toplam AH */
             uint8_t sel = (uint8_t)(subIndex % total);
             uint8_t prev = (uint8_t)((sel + total - 1u) % total);
             uint8_t next = (uint8_t)((sel + 1u) % total);
-            /* row1 prev */
-            LCD_SetCursor(1,1);
-            if (prev == 0)
-            {
-                LCD_Print(STR_BATV);
+            /* row1: blank if at top, else previous item */
+            LCD_SetCursor(0,1);
+            if (sel == 0) {
+                LCD_Print("                    ");
+            } else {
+                LCD_SetCursor(1,1);
+                if (prev == 0)
                 {
-                    uint16_t batv;
-                if (batInfo.batteryVoltage >= 24u)
-                {
-                    batv = 24u;
+                    LCD_Print(STR_BATV);
+                    {
+                        uint16_t batv;
+                        if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; }
+                        LCD_PrintUInt16(batv);
+                        LCD_WriteChar('V');
+                    }
                 }
-                else
-                {
-                    batv = 12u;
+                else /* prev == 1 */ 
+                { 
+                    LCD_Print(STR_CAPACITY);
+                    LCD_PrintUInt16_1dp(batInfo.batteryCap);
+                    LCD_Print("Ah"); 
                 }
-                    LCD_PrintUInt16(batv);
-                    LCD_WriteChar('V');
-                }
-            }
-            else if (prev == 1) 
-			{ 
-				LCD_Print(STR_CAPACITY);
-				LCD_PrintUInt16_1dp(batInfo.batteryCap);
-				LCD_Print("Ah"); 
-			}
-            else if (prev == 2)
-            {
-                LCD_Print(STR_COUNT);
-                LCD_PrintUInt16(batInfo.numberOfBattery);
-            }
-            else if (prev == 3)
-            {
-                LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
-                LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            else if (prev == 4)
-            {
-                LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
-                LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            else /* prev == 5 */
-            {
-                LCD_Print(ui_get(UI_STR_EQUALIZE));
-                LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
             }
             /* row2 sel */
             LCD_SetCursor(0,2);
@@ -539,65 +584,28 @@ void lcd_handle(void)
                 if (isEditing) LCD_WriteChar(']');
                 LCD_Print("Ah");
             }
-            else if (sel == 2)
-            {
-                LCD_Print(STR_COUNT);
-                if (isEditing) LCD_WriteChar('[');
-                LCD_PrintUInt16(batInfo.numberOfBattery);
-                if (isEditing) LCD_WriteChar(']');
-            }
-            else if (sel == 3)
-            {
-                LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
-                LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            else if (sel == 4)
-            {
-                LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
-                LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            else /* sel == 5 */
-            {
-                LCD_Print(ui_get(UI_STR_EQUALIZE));
-                LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            /* row3 next */
-            LCD_SetCursor(1,3);
-            if (next == 0)
-            {
-                LCD_Print(STR_BATV);
-                { 
-                    uint16_t batv; 
-                    if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; }
-                    LCD_PrintUInt16(batv);
-                    LCD_WriteChar('V');
-                } 
-            }
-            else if (next == 1)
-            {
-                LCD_Print(STR_CAPACITY);
-                LCD_PrintUInt16_1dp(batInfo.batteryCap);
-                LCD_Print("Ah"); 
-            }
-            else if (next == 2)
-            {
-                LCD_Print(STR_COUNT);
-                LCD_PrintUInt16(batInfo.numberOfBattery);
-            }
-            else if (next == 3)
-            {
-                LCD_Print(ui_get(UI_STR_SAFE_CHARGE));
-                LCD_Print(ui_get(batInfo.safeChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            else if (next == 4)
-            {
-                LCD_Print(ui_get(UI_STR_SOFT_CHARGE));
-                LCD_Print(ui_get(batInfo.softChargeEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
-            }
-            else /* next == 5 */
-            {
-                LCD_Print(ui_get(UI_STR_EQUALIZE));
-                LCD_Print(ui_get(batInfo.equalizationEnabled ? UI_STR_OPEN : UI_STR_CLOSE));
+            /* row3: blank if at bottom, else next item */
+            LCD_SetCursor(0,3);
+            if (sel == (uint8_t)(total-1u)) {
+                LCD_Print("                    ");
+            } else {
+                LCD_SetCursor(1,3);
+                if (next == 0)
+                {
+                    LCD_Print(STR_BATV);
+                    { 
+                        uint16_t batv; 
+                        if (batInfo.batteryVoltage >= 24u) { batv = 24u; } else { batv = 12u; }
+                        LCD_PrintUInt16(batv);
+                        LCD_WriteChar('V');
+                    } 
+                }
+                else /* next == 1 */
+                {
+                    LCD_Print(STR_CAPACITY);
+                    LCD_PrintUInt16_1dp(batInfo.batteryCap);
+                    LCD_Print("Ah"); 
+                }
             }
         }
         else
@@ -655,96 +663,18 @@ void lcd_handle(void)
     case PAGE_OUTPUT_CONTROL: {
         LCD_SetCursor(1,0);
         {
-            const char *t = ui_get(UI_STR_OUTPUT_CONTROL);
-            while (*t)
-            {
-                char c = *t++;
-                if (c >= 'a' && c <= 'z')
-                {
-                    c = (char)(c - 'a' + 'A');
-                }
-                LCD_WriteChar(c);
-            }
+            const char *t = OUTCTL_TITLE_LANG[lcdLangId][operatingMode];
+            while (*t) { char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
-        if (operatingMode == MODE_CHARGER) {
-            uint8_t total = 2u; /* Test V, Test I */
-            uint8_t sel = (uint8_t)(subIndex % total);
-            /* Row1: previous or blank if at top */
-            LCD_SetCursor(0,1);
-            if (sel == 0) {
-                LCD_Print("                    ");
-            }
-            else
-            {
-                LCD_SetCursor(1,1);
-                LCD_Print("Test V:");
-                LCD_PrintUInt16_1dp(testVoltage_dV);
-                LCD_WriteChar('V');
-            }
-            /* Row2: selected with edit highlight */
-            LCD_SetCursor(0,2);
-            LCD_WriteChar('>');
-            LCD_SetCursor(1,2);
-            if (sel == 0) {
-                LCD_Print("Test V:");
-                if (isEditing)
-                {
-                    LCD_WriteChar('[');
-                }
-                LCD_PrintUInt16_1dp(testVoltage_dV);
-                if (isEditing)
-                {
-                    LCD_WriteChar(']');
-                }
-                LCD_WriteChar('V');
-            }
-            else
-            {
-                LCD_Print("Test I:");
-                if (isEditing)
-                {
-                    LCD_WriteChar('[');
-                }
-                LCD_PrintUInt16_1dp(testCurrent_dA);
-                if (isEditing)
-                {
-                    LCD_WriteChar(']');
-                }
-                LCD_WriteChar(CH_CURR);
-            }
-            /* Row3: next or blank if at bottom */
-            LCD_SetCursor(0,3);
-            if (sel == (uint8_t)(total-1u))
-            {
-                LCD_Print("                    ");
-            }
-            else
-            {
-                LCD_SetCursor(1,3);
-                LCD_Print("Test I:");
-                LCD_PrintUInt16_1dp(testCurrent_dA);
-                LCD_WriteChar(CH_CURR);
-            }
-        }
-        else
-        {
-            /* Only one item, keep it on row2 with marker; clear rows 1 and 3 */
-            LCD_SetCursor(0,1);
-            LCD_Print("                    ");
-            LCD_SetCursor(0,2);
-            LCD_WriteChar('>');
-            LCD_SetCursor(1,2);
-            LCD_Print(ui_get(UI_STR_SHORT_TEST)); 
-			if (shortCircuitTest)
-			{
-				LCD_Print(ui_get(UI_STR_OPEN));
-			} else
-			{
-				LCD_Print(ui_get(UI_STR_CLOSE));
-			}
-            LCD_SetCursor(0,3);
-            LCD_Print("                    ");
-        }
+        /* Only one item (mode/lang via pointer tables) */
+        LCD_SetCursor(0,1);
+        LCD_Print("                    ");
+        LCD_SetCursor(0,2);
+        LCD_WriteChar('>');
+        LCD_SetCursor(1,2);
+        LCD_Print(OUTCTL_ITEM_LANG[lcdLangId][operatingMode]);
+        LCD_SetCursor(0,3);
+        LCD_Print("                    ");
     }
         break;
 
@@ -940,10 +870,76 @@ void lcd_handle(void)
                 LCD_WriteChar(c);
             } 
         }
-        LCD_SetCursor(0,2);
-        LCD_Print(ui_get(UI_STR_FACTORY_PAGE));
-        LCD_SetCursor(0,3);
-        LCD_Print(ui_get(UI_STR_LEFT_EXIT));
+        /* Items: Company, Gain, Offset, Limits, Mode (circular list) */
+        {
+            UiStrId ids[5] = { UI_STR_MFG_COMPANY, UI_STR_MFG_GAIN, UI_STR_MFG_OFFSET, UI_STR_MFG_LIMITS, UI_STR_MFG_MODE };
+            uint8_t total = 5u;
+            uint8_t sel = (uint8_t)(subIndex % total);
+            uint8_t prev = (uint8_t)((sel + total - 1u) % total);
+            uint8_t next = (uint8_t)((sel + 1u) % total);
+            /* Row1: previous */
+            LCD_SetCursor(1,1);
+            LCD_Print(ui_get(ids[prev]));
+            /* Row2: current with '>' */
+            LCD_SetCursor(0,2);
+            LCD_WriteChar('>');
+            LCD_SetCursor(1,2);
+            LCD_Print(ui_get(ids[sel]));
+            /* Row3: next */
+            LCD_SetCursor(1,3);
+            LCD_Print(ui_get(ids[next]));
+        }
+    }
+        break;
+
+    case PAGE_MFG_GAIN: {
+        /* Title */
+        LCD_SetCursor(1,0);
+        {
+            const char *t = ui_get(UI_STR_MFG_GAIN);
+            while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
+        }
+        /* Channels list around selection: VAC, TEMP, IDC, VBAT1, VDC1, VDC2, IDC2_1, IDC2_2, IDC2_3 */
+        const char *names[9] = { "VAC", "TEMP", "IDC", "VBAT1", "VDC1", "VDC2", "IDC2_1", "IDC2_2", "IDC2_3" };
+        uint8_t total = 9u;
+        uint8_t sel = (uint8_t)(subIndex % total);
+        uint8_t prev = (uint8_t)((sel + total - 1u) % total);
+        uint8_t next = (uint8_t)((sel + 1u) % total);
+        /* Row1 prev */
+        LCD_SetCursor(1,1);
+        LCD_Print(names[prev]);
+        LCD_Print(": ");
+        LCD_PrintUInt16(adcGain[prev]);
+        /* Row2 sel (edit like PIN if isEditing) */
+        LCD_SetCursor(0,2); LCD_WriteChar('>');
+        LCD_SetCursor(1,2);
+        LCD_Print(names[sel]);
+        LCD_Print(": ");
+        if (isEditing) {
+            /* show 4 digits with caret */
+            for (uint8_t i=0;i<5;i++){ LCD_WriteChar((char)('0'+gainEditDigits[i])); }
+            {
+                uint8_t nameLen = 0; while (names[sel][nameLen] && nameLen < 20) nameLen++;
+                LCD_SetCursor((uint8_t)(1u + nameLen + 2u + gainEditPos), 3); /* caret on row3 same col */
+            }
+        } else {
+            LCD_PrintUInt16(adcGain[sel]);
+        }
+        /* Row3 next or caret for edit */
+        if (!isEditing) {
+            LCD_SetCursor(1,3);
+            LCD_Print(names[next]);
+            LCD_Print(": ");
+            LCD_PrintUInt16(adcGain[next]);
+        } else {
+            LCD_SetCursor(0,3);
+            LCD_Print("                    ");
+            {
+                uint8_t nameLen = 0; while (names[sel][nameLen] && nameLen < 20) nameLen++;
+                LCD_SetCursor((uint8_t)(1u + nameLen + 2u + gainEditPos), 3);
+            }
+            LCD_WriteChar('^');
+        }
     }
         break;
 
@@ -982,7 +978,6 @@ void button_handle(void) {
             if (pageID == PAGE_ENTER_DATA) {
                 if (operatingMode == MODE_CHARGER) {
                     if (subIndex==1) batInfo.batteryCap = (uint16_t)editBackupValue;
-                    else if (subIndex==2) batInfo.numberOfBattery = (uint8_t)editBackupValue;
                 } else {
                     if (subIndex==0) outputVSet_dV = editBackupValue;
                     else if (subIndex==1) outputIMax_dA = editBackupValue;
@@ -994,6 +989,10 @@ void button_handle(void) {
                 }
             } else if (pageID == PAGE_SETTINGS) {
                 if (subIndex==1) brightness = (uint8_t)editBackupValue;
+            } else if (pageID == PAGE_MFG_GAIN) {
+                /* restore selected channel gain */
+                uint8_t sel = (uint8_t)(subIndex % 9u);
+                adcGain[sel] = (int16_t)editBackupValue;
             }
             isEditing = 0u; 
             uiNeedsClear = 1u; 
@@ -1004,6 +1003,11 @@ void button_handle(void) {
         {
             lcd_menu_set_page(PAGE_SETTINGS);
         } 
+        else if (pageID == PAGE_MFG_GAIN)
+        {
+            /* exit to manufacturer menu */
+            lcd_menu_set_page(PAGE_MFG_MENU);
+        }
         else if (pageID == PAGE_MENU) 
         {
             lcd_menu_set_page(PAGE_MAIN);
@@ -1033,7 +1037,7 @@ void button_handle(void) {
         HAL_GPIO_WritePin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin, GPIO_PIN_RESET);
         deviceOn = 0;
         dacValueI = 0;
-        dacValueV = 2000;
+        dacValueV = 1050;
     }
 
     /* Up/Down behavior depends on page */
@@ -1053,12 +1057,10 @@ void button_handle(void) {
                 if (buttonState & BUT_UP_M) {
                     if (subIndex == 0) { batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u; }
                     else if (subIndex == 1 && batInfo.batteryCap < 990) { batInfo.batteryCap += 10; }
-                    else if (subIndex == 2 && batInfo.numberOfBattery < 24) { batInfo.numberOfBattery++; }
                 }
                 if (buttonState & BUT_DOWN_M) {
                     if (subIndex == 0) { batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u; }
                     else if (subIndex == 1 && batInfo.batteryCap > 9) { batInfo.batteryCap -= 10; }
-                    else if (subIndex == 2 && batInfo.numberOfBattery > 1) { batInfo.numberOfBattery--; }
                 }
             } else { /* MODE_SUPPLY */
                 if (buttonState & BUT_UP_M) {
@@ -1073,7 +1075,7 @@ void button_handle(void) {
         } else {
             /* Navigate fields with Up/Down */
             uint8_t total;
-            if (operatingMode == MODE_CHARGER) { total = 6u; } else { total = 2u; }
+            if (operatingMode == MODE_CHARGER) { total = 2u; } else { total = 2u; }
             if (buttonState & BUT_UP_M) 
             { 
                 subIndex = (uint8_t)((subIndex + total - 1u) % total); 
@@ -1159,6 +1161,19 @@ void button_handle(void) {
             }
         }
         break;
+    case PAGE_MFG_GAIN:
+        if (isEditing) {
+            if (buttonState & BUT_UP_M) {
+                if (gainEditDigits[gainEditPos] < 9) { gainEditDigits[gainEditPos]++; }
+            }
+            if (buttonState & BUT_DOWN_M) {
+                if (gainEditDigits[gainEditPos] > 0) { gainEditDigits[gainEditPos]--; }
+            }
+        } else {
+            if (buttonState & BUT_UP_M) { subIndex = (uint8_t)((subIndex + 9u - 1u) % 9u); }
+            if (buttonState & BUT_DOWN_M) { subIndex = (uint8_t)((subIndex + 1u) % 9u); }
+        }
+        break;
     case PAGE_MFG_PIN:
         if (buttonState & BUT_UP_M) 
         {
@@ -1176,27 +1191,45 @@ void button_handle(void) {
         }
         if (buttonState & BUT_LEFT_M) 
         {
-            lcd_menu_set_page(PAGE_SETTINGS);
+            /* Sola bas: imleci sağa kaydır; son hanedeyken giriş yap */
+            if (mfgPinPos < 3u)
+            {
+                mfgPinPos++;
+            }
+            else
+            {
+                uint16_t entered = (uint16_t)(mfgPinInput[0]*1000 + mfgPinInput[1]*100 + mfgPinInput[2]*10 + mfgPinInput[3]);
+                if (entered == mfgPinCode) {
+                    mfgPinError = 0; 
+                    lcd_menu_set_page(PAGE_MFG_MENU);
+                } else {
+                    mfgPinError = 1; 
+                    mfgPinErrorUntilMs = HAL_GetTick() + 2000u; 
+                }
+            }
         }
-        if (buttonState & BUT_RIGHT_M) {
-            /* 2s hold to validate */
+        {
+            /* Right button long-press detection independent of buttonState */
+            static uint8_t rightPressTriggered = 0u; /* trigger once per hold */
             GPIO_PinState rightNow = HAL_GPIO_ReadPin(B5_GPIO_Port, B5_Pin);
             if (rightNow == GPIO_PIN_SET) {
-                if (rightPressStartMs == 0u) rightPressStartMs = HAL_GetTick();
-                if ((HAL_GetTick() - rightPressStartMs) >= 1000u) {
+                if (rightPressStartMs == 0u) { rightPressStartMs = HAL_GetTick(); rightPressTriggered = 0u; }
+                else if (!rightPressTriggered && (HAL_GetTick() - rightPressStartMs) >= 1000u) {
                     uint16_t entered = (uint16_t)(mfgPinInput[0]*1000 + mfgPinInput[1]*100 + mfgPinInput[2]*10 + mfgPinInput[3]);
                     if (entered == mfgPinCode) {
                         mfgPinError = 0; 
-                        rightPressStartMs = 0u; 
                         lcd_menu_set_page(PAGE_MFG_MENU);
                     } else {
                         mfgPinError = 1; 
                         mfgPinErrorUntilMs = HAL_GetTick() + 2000u; 
-                        rightPressStartMs = 0u; /* stay on PIN, show error 2s */
+                        mfgPinPos = 0;
+                        mfgPinInput[0] = mfgPinInput[1] = mfgPinInput[2] = mfgPinInput[3] = 0;
                     }
+                    rightPressTriggered = 1u; /* prevent retrigger until release */
                 }
             } else {
                 rightPressStartMs = 0u;
+                rightPressTriggered = 0u;
             }
         }
         break;
@@ -1204,6 +1237,27 @@ void button_handle(void) {
         if (buttonState & BUT_LEFT_M) 
         {
             lcd_menu_set_page(PAGE_SETTINGS);
+        }
+        if (buttonState & BUT_UP_M) 
+        {
+            subIndex = (uint8_t)((subIndex + 5u - 1u) % 5u);
+        }
+        if (buttonState & BUT_DOWN_M) 
+        {
+            subIndex = (uint8_t)((subIndex + 1u) % 5u);
+        }
+        if (buttonState & BUT_RIGHT_M)
+        {
+            /* Navigate to selected subpage */
+            UiStrId ids[5] = { UI_STR_MFG_COMPANY, UI_STR_MFG_GAIN, UI_STR_MFG_OFFSET, UI_STR_MFG_LIMITS, UI_STR_MFG_MODE };
+            uint8_t sel = (uint8_t)(subIndex % 5u);
+            if (ids[sel] == UI_STR_MFG_GAIN) {
+                subIndex = 0; /* start from first channel */
+                isEditing = 0; gainEditPos = 0; /* reset edit state */
+                lcd_menu_set_page(PAGE_MFG_GAIN);
+            } else {
+                /* TODO: other subpages to be implemented */
+            }
         }
         break;
     default:
@@ -1240,20 +1294,6 @@ void button_handle(void) {
             if (operatingMode == MODE_CHARGER && subIndex == 0u) {
                 /* Bat V immediate toggle */
                 batInfo.batteryVoltage = (batInfo.batteryVoltage >= 24u) ? 12u : 24u;
-            } else if (operatingMode == MODE_CHARGER && (subIndex == 3u || subIndex == 4u || subIndex == 5u)) {
-                /* Safe/Soft/Equalize toggle directly */
-                if (subIndex == 3u)
-                {
-                    batInfo.safeChargeEnabled ^= 1u;
-                }
-                else if (subIndex == 4u)
-                {
-                    batInfo.softChargeEnabled ^= 1u;
-                }
-                else
-                {
-                    batInfo.equalizationEnabled ^= 1u;
-                }
             } else {
                 if (!isEditing) {
                     /* enter edit mode and backup current value */
@@ -1261,10 +1301,6 @@ void button_handle(void) {
                         if (subIndex == 1u) 
                         { 
                             editBackupValue = (uint16_t)batInfo.batteryCap; 
-                        }
-                        else 
-                        { 
-                            editBackupValue = (uint16_t)batInfo.numberOfBattery; 
                         }
                     } else {
                         if (subIndex == 0u) 
@@ -1283,24 +1319,8 @@ void button_handle(void) {
                 }
             }
         } else if (pageID == PAGE_OUTPUT_CONTROL) {
-            if (operatingMode == MODE_CHARGER) {
-                if (!isEditing) {
-                    if (subIndex == 0u) 
-                    { 
-                        editBackupValue = testVoltage_dV; 
-                    }
-                    else 
-                    { 
-                        editBackupValue = testCurrent_dA; 
-                    }
-                    isEditing = 1u;
-                } else {
-                    isEditing = 0u; /* save current values */
-                }
-            } else {
-                /* Supply: Short test immediate toggle */
-                shortCircuitTest ^= 1u;
-            }
+            /* Sağ tuş: burada test fonksiyonu çağrılacak */
+            /* TODO: buraya test fonksiyonu gelecek */
         } else if (pageID == PAGE_SETTINGS) {
             /* Language: toggle, Manufacturer: go to PIN page, Brightness: edit */
             if (subIndex == 0u) {
@@ -1333,8 +1353,48 @@ void button_handle(void) {
             }
             lcd_menu_set_page(PAGE_MAIN);
         } else if (pageID == PAGE_MFG_PIN) {
-            /* Sağ kısa: bir sonraki haneye geçsin */
-            mfgPinPos = (uint8_t)((mfgPinPos + 1u) % 4u);
+            /* Sağ kısa: son hanede doğrula, değilse bir sonraki haneye geç */
+            if (mfgPinPos < 3u)
+            {
+                mfgPinPos++;
+            }
+            else
+            {
+                uint16_t entered = (uint16_t)(mfgPinInput[0]*1000 + mfgPinInput[1]*100 + mfgPinInput[2]*10 + mfgPinInput[3]);
+                if (entered == mfgPinCode) {
+                    mfgPinError = 0; 
+                    lcd_menu_set_page(PAGE_MFG_MENU);
+                } else {
+                    mfgPinError = 1; 
+                    mfgPinErrorUntilMs = HAL_GetTick() + 2000u; 
+                    mfgPinPos = 0;
+                    mfgPinInput[0] = mfgPinInput[1] = mfgPinInput[2] = mfgPinInput[3] = 0;
+                }
+            }
+        } else if (pageID == PAGE_MFG_GAIN) {
+            /* Right: enter edit or advance digit / confirm */
+            uint8_t sel = (uint8_t)(subIndex % 9u);
+            if (!isEditing) {
+                /* enter 4-digit edit; preload from current value */
+                uint16_t val = (uint16_t)adcGain[sel];
+                editBackupValue = val;
+                if (val > 99999u) val = 99999u;
+                gainEditDigits[0] = (uint8_t)((val / 10000u) % 10u);
+                gainEditDigits[1] = (uint8_t)((val / 1000u) % 10u);
+                gainEditDigits[2] = (uint8_t)((val / 100u) % 10u);
+                gainEditDigits[3] = (uint8_t)((val / 10u) % 10u);
+                gainEditDigits[4] = (uint8_t)(val % 10u);
+                gainEditPos = 0; isEditing = 1u;
+            } else {
+                if (gainEditPos < 4u) {
+                    gainEditPos++;
+                } else {
+                    /* confirm at last digit */
+                    uint16_t newVal = (uint16_t)(gainEditDigits[0]*10000u + gainEditDigits[1]*1000u + gainEditDigits[2]*100u + gainEditDigits[3]*10u + gainEditDigits[4]);
+                    adcGain[sel] = (int16_t)newVal;
+                    isEditing = 0u;
+                }
+            }
         }
     }
 

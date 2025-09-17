@@ -54,7 +54,7 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-int16_t dacValueV = 2000;
+int16_t dacValueV = 1050;
 int16_t dacValueI = 0;
 uint8_t mainCounter = 0;
 /* USER CODE END PV */

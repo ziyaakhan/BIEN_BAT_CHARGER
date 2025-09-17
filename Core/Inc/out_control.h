@@ -22,9 +22,8 @@
 #define PID_VOUT_INT_MAX  2000 //2000
 #define PID_VOUT_INT_MIN -2000 //0
 //-------------------------//
-#define PID_IOUT_KP 2000
-#define PID_IOUT_KI 0
-
+#define PID_IOUT_KP 2000 // yuk bankasinda 10000
+#define PID_IOUT_KI 100
 #define PID_IOUT_KD 0
 
 #define PID_IOUT_OUT_MAX  200 //2000

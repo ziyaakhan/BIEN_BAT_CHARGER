@@ -16,6 +16,7 @@ extern "C" {
 #include "main.h"
 #include <stdint.h>
 
+
 /**
  * @brief Initialize the LCD display
  * @details Performs 4-bit initialization sequence for HD44780 compatible displays

@@ -23,6 +23,14 @@
 #define BUT_OFF_POS    5  /**< Off button bit position */
 /**@}*/
 
+/* Manufacturer menu PIN selection via compile-time define */
+#define BIENDEBUG
+#ifdef BIENDEBUG
+#define MFG_MENU_PIN 0000
+#else
+#define MFG_MENU_PIN 1234
+#endif
+
 /** @name Button Masks
  * @brief Button masks for checking buttonState
  */
@@ -60,6 +68,7 @@
 #define PAGE_SETTINGS       6  /**< Settings page */
 #define PAGE_MFG_PIN        7  /**< Manufacturer PIN entry page */
 #define PAGE_MFG_MENU       8  /**< Manufacturer menu page */
+#define PAGE_MFG_GAIN       9  /**< Manufacturer Gain settings page */
 /**@}*/
 
 /**
