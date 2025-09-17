@@ -34,6 +34,7 @@ uint16_t adcIDC2 = 0;
 uint8_t temp;
 
 int16_t adcGain[ADC1_CHANNEL_COUNT + 3];
+uint16_t dcOffset = 1985;
 
 void adc_init(void)
 {

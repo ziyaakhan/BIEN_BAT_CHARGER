@@ -69,6 +69,10 @@
 #define PAGE_MFG_PIN        7  /**< Manufacturer PIN entry page */
 #define PAGE_MFG_MENU       8  /**< Manufacturer menu page */
 #define PAGE_MFG_GAIN       9  /**< Manufacturer Gain settings page */
+#define PAGE_MFG_COMPANY   10  /**< Manufacturer Company Name page */
+#define PAGE_MFG_OFFSET    11  /**< Manufacturer Offset settings page */
+#define PAGE_MFG_LIMITS    12  /**< Manufacturer Max/Min values page */
+#define PAGE_MFG_MODE      13  /**< Manufacturer Device mode page */
 /**@}*/
 
 /**
@@ -144,6 +148,7 @@ extern uint16_t mfgPinCode;          /**< Manufacturer PIN (default 0000) */
 extern uint8_t mfgPinInput[4];       /**< Current PIN entry digits */
 extern uint8_t mfgPinPos;            /**< Current cursor pos 0..3 for PIN */
 extern uint8_t mfgPinError;          /**< Last PIN state: 1 wrong */
+extern int16_t dcoffset;             /**< DC offset value editable in MFG Offset */
 /**@}*/
 
 #endif /* INC_LCDMENU_H_ */

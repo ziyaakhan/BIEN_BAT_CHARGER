@@ -29,9 +29,8 @@ static uint32_t rightPressStartMs = 0; /**< Right button hold start (ms), 0 if n
 uint8_t mfgPinError = 0;     /**< 1 if last PIN attempt was wrong */
 static uint32_t mfgPinErrorUntilMs = 0; /**< millis until which error is shown */
 static uint16_t editBackupValue = 0;    /**< backup for numeric edits */
-/* Gain edit state (manufacturer gain page) */
-static uint8_t gainEditDigits[5] = {0,0,0,0,0};
-static uint8_t gainEditPos = 0;
+/* Use dcOffset from adc.c via adc.h */
+/* Gain digit edit removed; edit happens inline on MFG menu */
 
 /* UI-only parameters and PIN state */
 uint8_t brightness = 50;         /**< 0..100 */
@@ -461,7 +460,6 @@ void lcd_handle(void)
         LCD_Print(labelsShort[3]); /* Temp/Sic */
         {
             /* Clear area before temp number */
-            uint8_t n3 = (uint8_t)(TEMP_COL + 5u);
             LCD_SetCursor(TEMP_COL + 5u, 3); /* rough clear width */
             LCD_Print("     ");
             LCD_SetCursor(TEMP_COL + 5u, 3);
@@ -857,18 +855,19 @@ void lcd_handle(void)
         break;
 
     case PAGE_MFG_MENU: {
+        /* Title */
         LCD_SetCursor(1,0);
-        { 
-            const char *t = ui_get(UI_STR_MANUFACTURER); 
+        {
+            const char *t = ui_get(UI_STR_MANUFACTURER);
             while(*t)
             {
-                char c = *t++; 
-                if (c >= 'a' && c <= 'z') 
+                char c = *t++;
+                if (c >= 'a' && c <= 'z')
                 {
                     c = (char)(c - 'a' + 'A');
                 }
                 LCD_WriteChar(c);
-            } 
+            }
         }
         /* Items: Company, Gain, Offset, Limits, Mode (circular list) */
         {
@@ -892,6 +891,18 @@ void lcd_handle(void)
     }
         break;
 
+    case PAGE_MFG_COMPANY: {
+        LCD_SetCursor(1,0);
+        {
+            const char *t = ui_get(UI_STR_MFG_COMPANY);
+            while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
+        }
+        LCD_SetCursor(0,1); LCD_Print("                    ");
+        LCD_SetCursor(0,2); LCD_Print("                    ");
+        LCD_SetCursor(0,3); LCD_Print("                    ");
+    }
+        break;
+
     case PAGE_MFG_GAIN: {
         /* Title */
         LCD_SetCursor(1,0);
@@ -899,47 +910,73 @@ void lcd_handle(void)
             const char *t = ui_get(UI_STR_MFG_GAIN);
             while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
-        /* Channels list around selection: VAC, TEMP, IDC, VBAT1, VDC1, VDC2, IDC2_1, IDC2_2, IDC2_3 */
+        /* Show adcGain channels list with values (like MFG menu) */
         const char *names[9] = { "VAC", "TEMP", "IDC", "VBAT1", "VDC1", "VDC2", "IDC2_1", "IDC2_2", "IDC2_3" };
         uint8_t total = 9u;
         uint8_t sel = (uint8_t)(subIndex % total);
         uint8_t prev = (uint8_t)((sel + total - 1u) % total);
         uint8_t next = (uint8_t)((sel + 1u) % total);
-        /* Row1 prev */
+        /* Row1: previous item */
         LCD_SetCursor(1,1);
         LCD_Print(names[prev]);
         LCD_Print(": ");
         LCD_PrintUInt16(adcGain[prev]);
-        /* Row2 sel (edit like PIN if isEditing) */
-        LCD_SetCursor(0,2); LCD_WriteChar('>');
+        /* Row2: current item with '>' and brackets if editing */
+        LCD_SetCursor(0,2);
+        LCD_WriteChar('>');
         LCD_SetCursor(1,2);
         LCD_Print(names[sel]);
         LCD_Print(": ");
-        if (isEditing) {
-            /* show 4 digits with caret */
-            for (uint8_t i=0;i<5;i++){ LCD_WriteChar((char)('0'+gainEditDigits[i])); }
-            {
-                uint8_t nameLen = 0; while (names[sel][nameLen] && nameLen < 20) nameLen++;
-                LCD_SetCursor((uint8_t)(1u + nameLen + 2u + gainEditPos), 3); /* caret on row3 same col */
-            }
-        } else {
-            LCD_PrintUInt16(adcGain[sel]);
+        if (isEditing) { LCD_WriteChar('['); }
+        LCD_PrintUInt16(adcGain[sel]);
+        if (isEditing) { LCD_WriteChar(']'); }
+        /* Row3: next item */
+        LCD_SetCursor(1,3);
+        LCD_Print(names[next]);
+        LCD_Print(": ");
+        LCD_PrintUInt16(adcGain[next]);
+    }
+        break;
+
+    case PAGE_MFG_OFFSET: {
+        /* Title */
+        LCD_SetCursor(1,0);
+        {
+            const char *t = ui_get(UI_STR_MFG_OFFSET);
+            while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
-        /* Row3 next or caret for edit */
-        if (!isEditing) {
-            LCD_SetCursor(1,3);
-            LCD_Print(names[next]);
-            LCD_Print(": ");
-            LCD_PrintUInt16(adcGain[next]);
-        } else {
-            LCD_SetCursor(0,3);
-            LCD_Print("                    ");
-            {
-                uint8_t nameLen = 0; while (names[sel][nameLen] && nameLen < 20) nameLen++;
-                LCD_SetCursor((uint8_t)(1u + nameLen + 2u + gainEditPos), 3);
-            }
-            LCD_WriteChar('^');
+        /* Show DC offset value, allow edit with brackets */
+        LCD_SetCursor(1,2);
+        LCD_Print("DC Offset: ");
+        if (isEditing) { LCD_WriteChar('['); }
+        LCD_PrintUInt16(dcOffset);
+        if (isEditing) { LCD_WriteChar(']'); }
+        LCD_SetCursor(0,1); LCD_Print("                    ");
+        LCD_SetCursor(0,3); LCD_Print("                    ");
+    }
+        break;
+
+    case PAGE_MFG_LIMITS: {
+        LCD_SetCursor(1,0);
+        {
+            const char *t = ui_get(UI_STR_MFG_LIMITS);
+            while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
+        LCD_SetCursor(0,1); LCD_Print("                    ");
+        LCD_SetCursor(0,2); LCD_Print("                    ");
+        LCD_SetCursor(0,3); LCD_Print("                    ");
+    }
+        break;
+
+    case PAGE_MFG_MODE: {
+        LCD_SetCursor(1,0);
+        {
+            const char *t = ui_get(UI_STR_MFG_MODE);
+            while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
+        }
+        LCD_SetCursor(0,1); LCD_Print("                    ");
+        LCD_SetCursor(0,2); LCD_Print("                    ");
+        LCD_SetCursor(0,3); LCD_Print("                    ");
     }
         break;
 
@@ -990,7 +1027,7 @@ void button_handle(void) {
             } else if (pageID == PAGE_SETTINGS) {
                 if (subIndex==1) brightness = (uint8_t)editBackupValue;
             } else if (pageID == PAGE_MFG_GAIN) {
-                /* restore selected channel gain */
+                /* restore selected channel gain on cancel */
                 uint8_t sel = (uint8_t)(subIndex % 9u);
                 adcGain[sel] = (int16_t)editBackupValue;
             }
@@ -1002,12 +1039,21 @@ void button_handle(void) {
         if (pageID == PAGE_MFG_PIN) 
         {
             lcd_menu_set_page(PAGE_SETTINGS);
+            uiNeedsClear = 1u; buttonState = 0; return;
         } 
-        else if (pageID == PAGE_MFG_GAIN)
+        else if (pageID == PAGE_MFG_MENU)
         {
-            /* exit to manufacturer menu */
-            lcd_menu_set_page(PAGE_MFG_MENU);
+            /* exit manufacturer menu */
+            lcd_menu_set_page(PAGE_SETTINGS);
+            uiNeedsClear = 1u; buttonState = 0; return;
         }
+        else if (pageID == PAGE_MFG_COMPANY || pageID == PAGE_MFG_GAIN || pageID == PAGE_MFG_OFFSET || pageID == PAGE_MFG_LIMITS || pageID == PAGE_MFG_MODE)
+        {
+            /* exit any manufacturer subpage back to manufacturer menu */
+            lcd_menu_set_page(PAGE_MFG_MENU);
+            uiNeedsClear = 1u; buttonState = 0; return;
+        }
+        
         else if (pageID == PAGE_MENU) 
         {
             lcd_menu_set_page(PAGE_MAIN);
@@ -1162,16 +1208,36 @@ void button_handle(void) {
         }
         break;
     case PAGE_MFG_GAIN:
-        if (isEditing) {
-            if (buttonState & BUT_UP_M) {
-                if (gainEditDigits[gainEditPos] < 9) { gainEditDigits[gainEditPos]++; }
+        /* Gain list editing: Up/Down navigate or adjust when editing; Right toggles editing; Left exits */
+        if (buttonState & BUT_LEFT_M)
+        {
+            if (isEditing)
+            {
+                uint8_t sel = (uint8_t)(subIndex % 9u);
+                adcGain[sel] = (int16_t)editBackupValue; /* restore on cancel */
+                isEditing = 0u;
             }
-            if (buttonState & BUT_DOWN_M) {
-                if (gainEditDigits[gainEditPos] > 0) { gainEditDigits[gainEditPos]--; }
-            }
-        } else {
+            lcd_menu_set_page(PAGE_MFG_MENU);
+            uiNeedsClear = 1u; buttonState = 0; return;
+        }
+        if (isEditing)
+        {
+            uint8_t sel = (uint8_t)(subIndex % 9u);
+            int16_t val = adcGain[sel];
+            if (buttonState & BUT_UP_M) { if (val < 32767) { val++; } }
+            if (buttonState & BUT_DOWN_M) { if (val > 0) { val--; } }
+            adcGain[sel] = val;
+        }
+        else
+        {
             if (buttonState & BUT_UP_M) { subIndex = (uint8_t)((subIndex + 9u - 1u) % 9u); }
             if (buttonState & BUT_DOWN_M) { subIndex = (uint8_t)((subIndex + 1u) % 9u); }
+        }
+        if (buttonState & BUT_RIGHT_M)
+        {
+            uint8_t sel = (uint8_t)(subIndex % 9u);
+            if (!isEditing) { editBackupValue = (uint16_t)adcGain[sel]; isEditing = 1u; }
+            else { isEditing = 0u; }
         }
         break;
     case PAGE_MFG_PIN:
@@ -1237,6 +1303,7 @@ void button_handle(void) {
         if (buttonState & BUT_LEFT_M) 
         {
             lcd_menu_set_page(PAGE_SETTINGS);
+            uiNeedsClear = 1u; buttonState = 0; return;
         }
         if (buttonState & BUT_UP_M) 
         {
@@ -1248,17 +1315,50 @@ void button_handle(void) {
         }
         if (buttonState & BUT_RIGHT_M)
         {
-            /* Navigate to selected subpage */
+            /* Enter selected manufacturer submenu */
             UiStrId ids[5] = { UI_STR_MFG_COMPANY, UI_STR_MFG_GAIN, UI_STR_MFG_OFFSET, UI_STR_MFG_LIMITS, UI_STR_MFG_MODE };
             uint8_t sel = (uint8_t)(subIndex % 5u);
+            isEditing = 0u; /* reset edit state when entering */
             if (ids[sel] == UI_STR_MFG_GAIN) {
-                subIndex = 0; /* start from first channel */
-                isEditing = 0; gainEditPos = 0; /* reset edit state */
+                subIndex = 0u; /* start from first channel */
                 lcd_menu_set_page(PAGE_MFG_GAIN);
+            } else if (ids[sel] == UI_STR_MFG_COMPANY) {
+                lcd_menu_set_page(PAGE_MFG_COMPANY);
+            } else if (ids[sel] == UI_STR_MFG_OFFSET) {
+                lcd_menu_set_page(PAGE_MFG_OFFSET);
+            } else if (ids[sel] == UI_STR_MFG_LIMITS) {
+                lcd_menu_set_page(PAGE_MFG_LIMITS);
             } else {
-                /* TODO: other subpages to be implemented */
+                lcd_menu_set_page(PAGE_MFG_MODE);
             }
+            uiNeedsClear = 1u; buttonState = 0; return;
         }
+        break;
+    case PAGE_MFG_COMPANY:
+        /* Left handled earlier returns to MFG_MENU; Up/Down/Right not used for now */
+        break;
+    case PAGE_MFG_OFFSET:
+        if (buttonState & BUT_LEFT_M)
+        {
+            if (isEditing) { dcOffset = (uint16_t)editBackupValue; isEditing = 0u; }
+            lcd_menu_set_page(PAGE_MFG_MENU); uiNeedsClear = 1u; buttonState = 0; return;
+        }
+        if (buttonState & BUT_RIGHT_M)
+        {
+            if (!isEditing) { editBackupValue = dcOffset; isEditing = 1u; }
+            else { isEditing = 0u; }
+        }
+        if (isEditing)
+        {
+            uint16_t val = dcOffset;
+            if (buttonState & BUT_UP_M) { if (val < 65535u) { val++; } }
+            if (buttonState & BUT_DOWN_M) { if (val > 0u) { val--; } }
+            dcOffset = val;
+        }
+        break;
+    case PAGE_MFG_LIMITS:
+        break;
+    case PAGE_MFG_MODE:
         break;
     default:
         break;
@@ -1369,30 +1469,6 @@ void button_handle(void) {
                     mfgPinErrorUntilMs = HAL_GetTick() + 2000u; 
                     mfgPinPos = 0;
                     mfgPinInput[0] = mfgPinInput[1] = mfgPinInput[2] = mfgPinInput[3] = 0;
-                }
-            }
-        } else if (pageID == PAGE_MFG_GAIN) {
-            /* Right: enter edit or advance digit / confirm */
-            uint8_t sel = (uint8_t)(subIndex % 9u);
-            if (!isEditing) {
-                /* enter 4-digit edit; preload from current value */
-                uint16_t val = (uint16_t)adcGain[sel];
-                editBackupValue = val;
-                if (val > 99999u) val = 99999u;
-                gainEditDigits[0] = (uint8_t)((val / 10000u) % 10u);
-                gainEditDigits[1] = (uint8_t)((val / 1000u) % 10u);
-                gainEditDigits[2] = (uint8_t)((val / 100u) % 10u);
-                gainEditDigits[3] = (uint8_t)((val / 10u) % 10u);
-                gainEditDigits[4] = (uint8_t)(val % 10u);
-                gainEditPos = 0; isEditing = 1u;
-            } else {
-                if (gainEditPos < 4u) {
-                    gainEditPos++;
-                } else {
-                    /* confirm at last digit */
-                    uint16_t newVal = (uint16_t)(gainEditDigits[0]*10000u + gainEditDigits[1]*1000u + gainEditDigits[2]*100u + gainEditDigits[3]*10u + gainEditDigits[4]);
-                    adcGain[sel] = (int16_t)newVal;
-                    isEditing = 0u;
                 }
             }
         }

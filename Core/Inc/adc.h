@@ -57,6 +57,7 @@ extern void calculationTemp(uint16_t adcValue);
 extern q15_t adc1Buffer[ADC1_CHANNEL_COUNT];
 extern int16_t adcBuffer[ADC1_CHANNEL_COUNT];
 extern int16_t adcGain[ADC1_CHANNEL_COUNT + 3];
+extern uint16_t dcOffset;
 
 extern q15_t adcMeanBuffer[ADC1_CHANNEL_COUNT][ADC_MEAN_BUFFER_SIZE];
 extern int32_t adcMeanSum[ADC_MEAN_CHANNEL_COUNT];
