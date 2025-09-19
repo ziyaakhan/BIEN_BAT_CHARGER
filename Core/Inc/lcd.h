@@ -85,6 +85,13 @@ void LCD_PrintInt16(int16_t value);
 void LCD_PrintUInt16_1dp(uint16_t value_times_10);
 
 /**
+ * @brief Print Q15 raw integer value (no scaling, no decimals)
+ * @details Prints the underlying int16_t value directly (e.g., 32768 -> "32768")
+ * @param value_q15 Q15 raw value to print
+ */
+void LCD_PrintQ15(int16_t value_q15);
+
+/**
  * @brief Print an 8-bit value with 2-digit formatting
  * @param value Value to print (0-99, values >=100 show as 99)
  */

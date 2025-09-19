@@ -267,6 +267,10 @@ void LCD_PrintUInt16_1dp(uint16_t value_times_10) {
     LCD_WriteChar((char)('0' + frac));
 }
 
+void LCD_PrintQ15(int16_t value_q15) {
+    LCD_PrintInt16(value_q15);
+}
+
 /**
  * @brief Print an 8-bit value with 2-digit formatting
  * @param value Value to print (0-99, values >=100 show as 99)

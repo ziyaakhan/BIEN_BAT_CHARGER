@@ -124,7 +124,7 @@ extern uint8_t uiNeedsClear;  /**< UI refresh flag */
 extern OperatingMode operatingMode; /**< Current operating mode */
 extern uint8_t menuIndex;           /**< Current menu selection index */
 extern uint8_t subIndex;            /**< Current subpage selection index */
-extern const char * companyName;    /**< Company name shown on loading/title */
+extern char companyName[21];        /**< Company name shown on loading/title (editable, null-terminated) */
 
 /**
  * @brief Device names per language and mode (pointer-to-pointer)
@@ -148,7 +148,6 @@ extern uint16_t mfgPinCode;          /**< Manufacturer PIN (default 0000) */
 extern uint8_t mfgPinInput[4];       /**< Current PIN entry digits */
 extern uint8_t mfgPinPos;            /**< Current cursor pos 0..3 for PIN */
 extern uint8_t mfgPinError;          /**< Last PIN state: 1 wrong */
-extern int16_t dcoffset;             /**< DC offset value editable in MFG Offset */
 /**@}*/
 
 #endif /* INC_LCDMENU_H_ */

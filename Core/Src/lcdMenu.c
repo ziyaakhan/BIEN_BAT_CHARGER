@@ -21,7 +21,14 @@ uint8_t lcdLangId = 1;     /**< Language ID (0: EN, 1: TR) */
 static uint8_t prevPageID = 0xFF; /**< Previous page ID for change detection */
 uint8_t uiNeedsClear = 0;  /**< UI refresh flag */
 /* operatingMode now defined in out_control.c */
-const char * companyName = "BIENSIS"; /**< Company name editable at runtime */
+char companyName[21] = "BIENSIS"; /**< Company name editable at runtime */
+uint8_t deviceMode = 2; /**< Device mode: 0=GUC KAYNAGI, 1=SARJ CIHAZI, 2=KULLANICI SECIM (default) */
+/* Max/Min limit values for manufacturer menu */
+uint16_t vMax_dV = 300; /**< Voltage maximum in decivolts (30.0V) */
+uint16_t iMax_dA = 100; /**< Current maximum in deciamps (10.0A) */
+uint16_t tempMax = 100; /**< Temperature maximum in degrees C */
+uint8_t outputState = 0; /**< Output state: 0=off, 1=on */
+
 uint8_t menuIndex = 0;  /**< Current menu selection index [0..3] */
 uint8_t subIndex = 0;   /**< Current subpage selection index */
 static uint8_t isEditing = 0;       /**< 0: navigating, 1: editing current field */
@@ -31,6 +38,9 @@ static uint32_t mfgPinErrorUntilMs = 0; /**< millis until which error is shown *
 static uint16_t editBackupValue = 0;    /**< backup for numeric edits */
 /* Use dcOffset from adc.c via adc.h */
 /* Gain digit edit removed; edit happens inline on MFG menu */
+/* Company name edit state */
+static char companyBackup[21] = {0};
+static uint8_t companyEditPos = 0; /* 0..19 within companyName */
 
 /* UI-only parameters and PIN state */
 uint8_t brightness = 50;         /**< 0..100 */
@@ -225,6 +235,27 @@ static const char * const * const MENU_ITEMS_LANG_MODE[2][2] = {
     { MENU_ITEMS_TR_CHARGER, MENU_ITEMS_TR_SUPPLY }
 };
 
+/* Device mode strings for manufacturer menu */
+static const char * const DEVICE_MODE_STRINGS_EN[3] = { "Power Supply", "Battery Charger", "User Selection" };
+static const char * const DEVICE_MODE_STRINGS_TR[3] = { "Guc Kaynagi", "Sarj Cihazi", "Kullanici Secim" };
+static const char * const * DEVICE_MODE_STRINGS = 0; /* Pointer to current language strings */
+
+/* Device type strings for main page title */
+static const char * const DEVICE_TYPE_EN[2] = { "Charger", "Supply" };
+static const char * const DEVICE_TYPE_TR[2] = { "Sarj Cihazi", "Guc Kaynagi" };
+static const char * const * DEVICE_TYPE_STRINGS = 0; /* Pointer to current language strings */
+
+/* Main page label strings */
+static const char * const MAIN_LABELS_EN[3] = { "Output V:", "Output I:", "Mains:" };
+static const char * const MAIN_LABELS_TR[3] = { "Cikis V:", "Cikis I:", "Sebeke:" };
+static const char * const * MAIN_LABELS = 0; /* Pointer to current language strings */
+
+/* Status strings */
+static const char * const STATUS_EN[2] = { "Close", "Open" };
+static const char * const STATUS_TR[2] = { "Kapali", "Acik" };
+static const char * const * STATUS_STRINGS = 0; /* Pointer to current language strings */
+
+
 /* Output control page title and single-item label via pointer tables */
 static const char * const OUTCTL_TITLE_EN[2] = { "Output Control", "Output Control" };
 static const char * const OUTCTL_TITLE_TR[2] = { "Aku kontrol", "Cikis Kontrol" };
@@ -254,6 +285,10 @@ static void ui_assign_language(void)
         CH_CURR                = 'I';
         STATUS_COL             = 15u;
         TEMP_COL               = 11u;
+        DEVICE_MODE_STRINGS    = DEVICE_MODE_STRINGS_EN;
+        DEVICE_TYPE_STRINGS    = DEVICE_TYPE_EN;
+        MAIN_LABELS            = MAIN_LABELS_EN;
+        STATUS_STRINGS         = STATUS_EN;
     } else {
         STR_LOAD_BORDER_TOP    = strTR_LOADING_LINE0;
         STR_LOAD_BORDER_BOTTOM = strTR_LOADING_LINE3;
@@ -263,6 +298,10 @@ static void ui_assign_language(void)
         CH_CURR                = 'A';
         STATUS_COL             = 14u;
         TEMP_COL               = 12u;
+        DEVICE_MODE_STRINGS    = DEVICE_MODE_STRINGS_TR;
+        DEVICE_TYPE_STRINGS    = DEVICE_TYPE_TR;
+        MAIN_LABELS            = MAIN_LABELS_TR;
+        STATUS_STRINGS         = STATUS_TR;
     }
 }
 
@@ -367,105 +406,65 @@ void lcd_handle(void)
         break;
 
     case PAGE_MAIN: {
-        const char * titleShort = TITLE_NAMES_LANG[lcdLangId][operatingMode];
-        const char * const * labelsShort = STR_LABELS_SHORT;
-
-        /* Title (row 0) */
+        /* Row 0: Company name + device type (optimized for embedded) */
 		LCD_SetCursor(0, 0);
-        /* Compose: COMPANY + space + titleShort (ensure <=20) */
         {
             char line[21];
-            int idx = 0;
+            uint8_t idx = 0;
+            uint8_t companyLen = 0;
             const char *a = companyName;
+            while (*a && companyLen < 20) { a++; companyLen++; }
+            
+            if (companyLen > 8) {
+                /* Show only company name, centered */
+                a = companyName;
+                uint8_t pad = (20 - companyLen) >> 1; /* Bit shift for divide by 2 */
+                for (uint8_t i = 0; i < pad && idx < 20; i++) line[idx++] = ' ';
+                while (*a && idx < 20) line[idx++] = *a++;
+                while (idx < 20) line[idx++] = ' ';
+            } else {
+                /* Show COMPANY + space + device type using pointer-to-pointer */
+                a = companyName;
             while (*a && idx < 20) line[idx++] = *a++;
             if (idx < 20) line[idx++] = ' ';
-            const char *b = titleShort;
+                
+                /* Use pointer-to-pointer to eliminate if/else - embedded optimization */
+                const char *deviceType = DEVICE_TYPE_STRINGS[operatingMode];
+                const char *b = deviceType;
             while (*b && idx < 20) line[idx++] = *b++;
             while (idx < 20) line[idx++] = ' ';
+            }
             line[20] = '\0';
             LCD_Print(line);
         }
 
-        /* Row 1 (index 1): Iout / Cikis I */
+        /* Row 1: Output voltage with status */
 		LCD_SetCursor(0, 1);
-        LCD_Print(labelsShort[0]);
-        {
-            /* Clear previous numeric+unit area (handle shrinking values) */
-            const char *ls0 = labelsShort[0];
-            uint8_t n0 = 0; while (ls0[n0] && n0 < 20) n0++;
-            LCD_SetCursor(n0, 1);
-            LCD_Print("       "); /* 7 spaces */
-            LCD_SetCursor(n0, 1);
-        }
-        LCD_PrintUInt16_1dp(adcIDC2);
-        LCD_WriteChar(CH_CURR);
-
-        /* Row 2 (index 2): Vout / Cikis V */
-		LCD_SetCursor(0, 2);
-        LCD_Print(labelsShort[1]);
-        {
-            /* Clear previous numeric+unit area to avoid artifacts like double 'V' */
-            const char *ls1 = labelsShort[1];
-            uint8_t n1 = 0; while (ls1[n1] && n1 < 20) n1++;
-            LCD_SetCursor(n1, 2);
-            LCD_Print("       "); /* 7 spaces */
-            LCD_SetCursor(n1, 2);
-        }
+        LCD_Print(MAIN_LABELS[0]); /* "Cikis V:" / "Output V:" */
+        LCD_SetCursor(8, 1);
+        LCD_Print("      "); /* Clear 6 spaces to remove old value and extra V */
+        LCD_SetCursor(8, 1);
         LCD_PrintUInt16_1dp(adcVBAT1);
         LCD_WriteChar('V');
-
-        /* Status moved one row down: right side of row 1 */
-        {
-            LCD_SetCursor(STATUS_COL, 1);
-            if (HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET)
-            {
-                LCD_Print(ui_get(UI_STR_OPEN));
-            }
-            else
-            {
-                LCD_Print(ui_get(UI_STR_CLOSE));
-            }
+        LCD_SetCursor(14, 1);
+        LCD_Print(STATUS_STRINGS[outputState]); /* "Acik"/"Kapali" or "Open"/"Close" */
+        
+        /* Row 2: Output current with charge state */
+        LCD_SetCursor(0, 2);
+        LCD_Print(MAIN_LABELS[1]); /* "Cikis I:" / "Output I:" */
+        LCD_SetCursor(8, 2);
+        LCD_Print("      "); /* Clear 6 spaces to remove old value */
+        LCD_SetCursor(8, 2);
+        LCD_PrintUInt16_1dp(adcIDC2);
+        LCD_WriteChar('A');
+        /* Show charge state only when output is on and in charger mode */
+        if (operatingMode == MODE_CHARGER && outputState) {
+            LCD_SetCursor(14, 2);
+            LCD_Print(STAGE_NAMES_LANG[lcdLangId][batInfo.chargeState]); /* Charge state */
+        } else {
+            LCD_SetCursor(14, 2);
+            LCD_Print("      "); /* Clear charge state area */
         }
-
-        /* If charger and output is on, show charge state under the status */
-        {
-            LCD_SetCursor(STATUS_COL, 2);
-            if (operatingMode == MODE_CHARGER && HAL_GPIO_ReadPin(SHUTDOWN2_GPIO_Port, SHUTDOWN2_Pin) == GPIO_PIN_SET)
-            {
-                /* clear previous content and print stage */
-                LCD_Print("       ");
-                LCD_SetCursor(STATUS_COL, 2);
-                LCD_Print(STAGE_NAMES_LANG[lcdLangId][batInfo.chargeState]);
-            }
-            else
-            {
-                /* clear area under status when not applicable */
-                LCD_Print("       ");
-            }
-        }
-
-        /* Row 3: Mains/Sebeke and Temp/Sic split across the line */
-		LCD_SetCursor(0, 3);
-        LCD_Print(labelsShort[2]); /* Sebeke/Mains */
-        {
-            const char *ls2 = labelsShort[2];
-            uint8_t n2 = 0; while (ls2[n2] && n2 < 20) n2++;
-            LCD_SetCursor(n2, 3);
-            LCD_Print("       ");
-            LCD_SetCursor(n2, 3);
-        }
-        LCD_PrintUInt16(adcVAC);
-        LCD_WriteChar('V');
-        LCD_SetCursor(TEMP_COL, 3);
-        LCD_Print(labelsShort[3]); /* Temp/Sic */
-        {
-            /* Clear area before temp number */
-            LCD_SetCursor(TEMP_COL + 5u, 3); /* rough clear width */
-            LCD_Print("     ");
-            LCD_SetCursor(TEMP_COL + 5u, 3);
-        }
-        LCD_PrintUInt16(temp);
-        LCD_WriteChar('C');
     }
         break;
 
@@ -490,7 +489,12 @@ void lcd_handle(void)
 
         /* Circular menu with centered '>' at row 2 (index 2).
            We show 3 items around the selected index: prev, current, next. */
-        uint8_t total = 4u;
+        uint8_t total;
+        if (deviceMode == 2) { /* KULLANICI SECIM */
+            total = 4u; /* Show all 4 menu items including Operating Mode */
+        } else {
+            total = 3u; /* Hide Operating Mode when device mode is fixed */
+        }
         uint8_t sel = (uint8_t)(menuIndex % total);
         uint8_t prev = (uint8_t)((sel + total - 1u) % total);
         uint8_t next = (uint8_t)((sel + 1u) % total);
@@ -499,7 +503,13 @@ void lcd_handle(void)
         LCD_SetCursor(1, 1);
         LCD_WriteChar((char)('1' + prev));
         LCD_WriteChar('.');
+        if (deviceMode == 2) {
         LCD_Print(items[prev]);
+        } else {
+            /* Skip operating mode (index 2), map: 0->0, 1->1, 2->3 */
+            uint8_t realPrev = (prev >= 2) ? (prev + 1) : prev;
+            LCD_Print(items[realPrev]);
+        }
 
         /* Row 2: current item with '>' at column 0 */
         LCD_SetCursor(0, 2);
@@ -507,13 +517,25 @@ void lcd_handle(void)
         LCD_SetCursor(1, 2);
         LCD_WriteChar((char)('1' + sel));
         LCD_WriteChar('.');
+        if (deviceMode == 2) {
         LCD_Print(items[sel]);
+        } else {
+            /* Skip operating mode (index 2), map: 0->0, 1->1, 2->3 */
+            uint8_t realSel = (sel >= 2) ? (sel + 1) : sel;
+            LCD_Print(items[realSel]);
+        }
 
         /* Row 3: next item (leave col 0 empty) */
         LCD_SetCursor(1, 3);
         LCD_WriteChar((char)('1' + next));
         LCD_WriteChar('.');
+        if (deviceMode == 2) {
         LCD_Print(items[next]);
+        } else {
+            /* Skip operating mode (index 2), map: 0->0, 1->1, 2->3 */
+            uint8_t realNext = (next >= 2) ? (next + 1) : next;
+            LCD_Print(items[realNext]);
+        }
     }
         break;
 
@@ -541,7 +563,6 @@ void lcd_handle(void)
             /* row1: blank if at top, else previous item */
             LCD_SetCursor(0,1);
             if (sel == 0) {
-                LCD_Print("                    ");
             } else {
                 LCD_SetCursor(1,1);
                 if (prev == 0)
@@ -857,17 +878,17 @@ void lcd_handle(void)
     case PAGE_MFG_MENU: {
         /* Title */
         LCD_SetCursor(1,0);
-        {
-            const char *t = ui_get(UI_STR_MANUFACTURER);
+        { 
+            const char *t = ui_get(UI_STR_MANUFACTURER); 
             while(*t)
             {
-                char c = *t++;
-                if (c >= 'a' && c <= 'z')
+                char c = *t++; 
+                if (c >= 'a' && c <= 'z') 
                 {
                     c = (char)(c - 'a' + 'A');
                 }
                 LCD_WriteChar(c);
-            }
+            } 
         }
         /* Items: Company, Gain, Offset, Limits, Mode (circular list) */
         {
@@ -892,14 +913,51 @@ void lcd_handle(void)
         break;
 
     case PAGE_MFG_COMPANY: {
+        /* Title */
         LCD_SetCursor(1,0);
         {
             const char *t = ui_get(UI_STR_MFG_COMPANY);
             while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
+        /* Auto-start editing when entering page */
+        if (!isEditing)
+        {
+            for (int i=0;i<21;i++){ companyBackup[i] = companyName[i]; }
+            companyEditPos = 0;
+            isEditing = 1u;
+        }
+        
+        /* Show current company name starting from column 0; edit with ^ cursor */
         LCD_SetCursor(0,1); LCD_Print("                    ");
-        LCD_SetCursor(0,2); LCD_Print("                    ");
-        LCD_SetCursor(0,3); LCD_Print("                    ");
+        {
+            char line[21];
+            int len = 0; while (companyName[len] && len < 20) len++;
+            int idx = 0;
+            for (int i=0;i<len && idx < 20; i++) {
+                char c = companyName[i];
+                /* ensure uppercase A-Z */
+                if (c >= 'a' && c <= 'z') c = (char)(c - 'a' + 'A');
+                if (c < 'A' || c > 'Z') c = ' ';
+                line[idx++] = c;
+            }
+            while (idx < 20) line[idx++] = ' ';
+            line[20] = '\0';
+            LCD_SetCursor(0,2);
+            LCD_Print(line);
+            
+            /* Show cursor position with ^ */
+            if (isEditing) {
+                LCD_SetCursor(0,3); LCD_Print("                    ");
+                int cursorCol = companyEditPos;
+                if (cursorCol >= 0 && cursorCol < 20) {
+                    LCD_SetCursor(cursorCol, 3);
+                    LCD_WriteChar('^');
+                }
+            } else {
+                /* Clear cursor line when not editing */
+                LCD_SetCursor(0,3); LCD_Print("                    ");
+            }
+        }
     }
         break;
 
@@ -920,7 +978,7 @@ void lcd_handle(void)
         LCD_SetCursor(1,1);
         LCD_Print(names[prev]);
         LCD_Print(": ");
-        LCD_PrintUInt16(adcGain[prev]);
+        LCD_PrintQ15(adcGain[prev]);
         /* Row2: current item with '>' and brackets if editing */
         LCD_SetCursor(0,2);
         LCD_WriteChar('>');
@@ -928,13 +986,13 @@ void lcd_handle(void)
         LCD_Print(names[sel]);
         LCD_Print(": ");
         if (isEditing) { LCD_WriteChar('['); }
-        LCD_PrintUInt16(adcGain[sel]);
+        LCD_PrintQ15(adcGain[sel]);
         if (isEditing) { LCD_WriteChar(']'); }
         /* Row3: next item */
         LCD_SetCursor(1,3);
         LCD_Print(names[next]);
         LCD_Print(": ");
-        LCD_PrintUInt16(adcGain[next]);
+        LCD_PrintQ15(adcGain[next]);
     }
         break;
 
@@ -962,9 +1020,68 @@ void lcd_handle(void)
             const char *t = ui_get(UI_STR_MFG_LIMITS);
             while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
-        LCD_SetCursor(0,1); LCD_Print("                    ");
-        LCD_SetCursor(0,2); LCD_Print("                    ");
-        LCD_SetCursor(0,3); LCD_Print("                    ");
+        {
+            uint8_t total = 3u; /* V Max, I Max, Temp Max */
+            uint8_t sel = (uint8_t)(subIndex % total);
+            uint8_t prev = (uint8_t)((sel + total - 1u) % total);
+            uint8_t next = (uint8_t)((sel + 1u) % total);
+            
+            /* row1 prev */
+            LCD_SetCursor(1,1);
+            if (prev == 0) {
+                LCD_Print("V Max:");
+                LCD_PrintUInt16_1dp(vMax_dV);
+                LCD_WriteChar('V');
+            } else if (prev == 1) {
+                LCD_Print("I Max:");
+                LCD_PrintUInt16_1dp(iMax_dA);
+                LCD_WriteChar('A');
+        } else {
+                LCD_Print("Temp Max:");
+                LCD_PrintUInt16(tempMax);
+                LCD_WriteChar('C');
+            }
+            
+            /* row2 current with > */
+            LCD_SetCursor(0,2);
+            LCD_WriteChar('>');
+            LCD_SetCursor(1,2);
+            if (sel == 0) {
+                LCD_Print("V Max:");
+                if (isEditing) LCD_WriteChar('[');
+                LCD_PrintUInt16_1dp(vMax_dV);
+                if (isEditing) LCD_WriteChar(']');
+                LCD_WriteChar('V');
+            } else if (sel == 1) {
+                LCD_Print("I Max:");
+                if (isEditing) LCD_WriteChar('[');
+                LCD_PrintUInt16_1dp(iMax_dA);
+                if (isEditing) LCD_WriteChar(']');
+                LCD_WriteChar('A');
+            } else {
+                LCD_Print("Temp Max:");
+                if (isEditing) LCD_WriteChar('[');
+                LCD_PrintUInt16(tempMax);
+                if (isEditing) LCD_WriteChar(']');
+                LCD_WriteChar('C');
+            }
+            
+            /* row3 next */
+            LCD_SetCursor(1,3);
+            if (next == 0) {
+                LCD_Print("V Max:");
+                LCD_PrintUInt16_1dp(vMax_dV);
+                LCD_WriteChar('V');
+            } else if (next == 1) {
+                LCD_Print("I Max:");
+                LCD_PrintUInt16_1dp(iMax_dA);
+                LCD_WriteChar('A');
+        } else {
+                LCD_Print("Temp Max:");
+                LCD_PrintUInt16(tempMax);
+                LCD_WriteChar('C');
+            }
+        }
     }
         break;
 
@@ -974,9 +1091,30 @@ void lcd_handle(void)
             const char *t = ui_get(UI_STR_MFG_MODE);
             while(*t){ char c=*t++; if(c>='a'&&c<='z') c=(char)(c-'a'+'A'); LCD_WriteChar(c);}    
         }
-        LCD_SetCursor(0,1); LCD_Print("                    ");
-        LCD_SetCursor(0,2); LCD_Print("                    ");
-        LCD_SetCursor(0,3); LCD_Print("                    ");
+        {
+            uint8_t total = 3u; /* GUC KAYNAGI, SARJ CIHAZI, KULLANICI SECIM */
+            /* Set subIndex to current deviceMode when entering page */
+            if (prevPageID != pageID) {
+                subIndex = deviceMode;
+            }
+            uint8_t sel = (uint8_t)(subIndex % total);
+            uint8_t prev = (uint8_t)((sel + total - 1u) % total);
+            uint8_t next = (uint8_t)((sel + 1u) % total);
+            
+            /* row1 prev */
+            LCD_SetCursor(1,1);
+            LCD_Print(DEVICE_MODE_STRINGS[prev]);
+            
+            /* row2 current with > */
+            LCD_SetCursor(0,2);
+            LCD_WriteChar('>');
+            LCD_SetCursor(1,2);
+            LCD_Print(DEVICE_MODE_STRINGS[sel]);
+            
+            /* row3 next */
+            LCD_SetCursor(1,3);
+            LCD_Print(DEVICE_MODE_STRINGS[next]);
+        }
     }
         break;
 
@@ -1030,6 +1168,11 @@ void button_handle(void) {
                 /* restore selected channel gain on cancel */
                 uint8_t sel = (uint8_t)(subIndex % 9u);
                 adcGain[sel] = (int16_t)editBackupValue;
+            } else if (pageID == PAGE_MFG_COMPANY) {
+                /* restore company name on cancel */
+                for (int i=0;i<21;i++){ companyName[i] = companyBackup[i]; }
+                /* navigate back to manufacturer menu */
+                lcd_menu_set_page(PAGE_MFG_MENU);
             }
             isEditing = 0u; 
             uiNeedsClear = 1u; 
@@ -1089,11 +1232,19 @@ void button_handle(void) {
     /* Up/Down behavior depends on page */
     switch (pageID) {
     case PAGE_MENU:
+        {
+            uint8_t total;
+            if (deviceMode == 2) { /* KULLANICI SECIM */
+                total = 4u; /* Show all 4 menu items including Operating Mode */
+            } else {
+                total = 3u; /* Hide Operating Mode when device mode is fixed */
+            }
         if (buttonState & BUT_UP_M) {
-            menuIndex = (uint8_t)((menuIndex + 4u - 1u) % 4u);
+                menuIndex = (uint8_t)((menuIndex + total - 1u) % total);
         }
         if (buttonState & BUT_DOWN_M) {
-            menuIndex = (uint8_t)((menuIndex + 1u) % 4u);
+                menuIndex = (uint8_t)((menuIndex + 1u) % total);
+            }
         }
         break;
     case PAGE_ENTER_DATA:
@@ -1230,8 +1381,14 @@ void button_handle(void) {
         }
         else
         {
-            if (buttonState & BUT_UP_M) { subIndex = (uint8_t)((subIndex + 9u - 1u) % 9u); }
-            if (buttonState & BUT_DOWN_M) { subIndex = (uint8_t)((subIndex + 1u) % 9u); }
+            if (buttonState & BUT_UP_M) 
+            { 
+                subIndex = (uint8_t)((subIndex + 9u - 1u) % 9u); 
+            }
+            if (buttonState & BUT_DOWN_M) 
+            { 
+                subIndex = (uint8_t)((subIndex + 1u) % 9u); 
+            }
         }
         if (buttonState & BUT_RIGHT_M)
         {
@@ -1318,8 +1475,8 @@ void button_handle(void) {
             /* Enter selected manufacturer submenu */
             UiStrId ids[5] = { UI_STR_MFG_COMPANY, UI_STR_MFG_GAIN, UI_STR_MFG_OFFSET, UI_STR_MFG_LIMITS, UI_STR_MFG_MODE };
             uint8_t sel = (uint8_t)(subIndex % 5u);
-            isEditing = 0u; /* reset edit state when entering */
             if (ids[sel] == UI_STR_MFG_GAIN) {
+                isEditing = 0u; /* reset edit state when entering gain */
                 subIndex = 0u; /* start from first channel */
                 lcd_menu_set_page(PAGE_MFG_GAIN);
             } else if (ids[sel] == UI_STR_MFG_COMPANY) {
@@ -1335,7 +1492,69 @@ void button_handle(void) {
         }
         break;
     case PAGE_MFG_COMPANY:
-        /* Left handled earlier returns to MFG_MENU; Up/Down/Right not used for now */
+        /* Company name edit: Right to move right, Left to exit; Up/Down change letter A..Z; at end, Right saves & exits */
+        if (buttonState & BUT_RIGHT_M)
+        {
+            /* move cursor right if possible */
+            if (companyEditPos < 19u) { 
+                companyEditPos++; 
+            } else {
+                /* at end, save and exit */
+                isEditing = 0u; lcd_menu_set_page(PAGE_MFG_MENU); uiNeedsClear = 1u; buttonState = 0; return;
+            }
+        }
+        if (isEditing)
+        {
+            /* Ensure current char is A..Z or space; editing always writes uppercase */
+            char c = companyName[companyEditPos];
+            if (buttonState & BUT_UP_M)
+            {
+                if (c == '\0') {
+                    /* At end: first add a space so words separate */
+                    c = ' ';
+                } else if (c == ' ') {
+                    c = 'A'; /* space -> A */
+                } else if (c >= 'A' && c < 'Z') {
+                    c++; 
+                } else if (c == 'Z') {
+                    c = ' '; /* Z -> space */
+                } else {
+                    /* Any non A-Z: go to space first */
+                    c = ' ';
+                }
+                companyName[companyEditPos] = c;
+            }
+            if (buttonState & BUT_DOWN_M)
+            {
+                if (c == 'A' || c == ' ')
+                {
+                    /* delete current char: shift left including terminator */
+                    int i = (int)companyEditPos;
+                    while (i < 20)
+                    {
+                        companyName[i] = companyName[i+1];
+                        if (companyName[i] == '\0') break;
+                        i++;
+                    }
+                    companyName[20] = '\0';
+                    /* keep cursor within new length */
+                    int len = 0; while (companyName[len] && len < 20) len++;
+                    if (companyEditPos >= (uint8_t)len && companyEditPos > 0u) { companyEditPos--; }
+                }
+                else if (c > 'A' && c <= 'Z')
+                {
+                    c--; companyName[companyEditPos] = c;
+                }
+                else if (c == ' ')
+                {
+                    c = 'Z'; companyName[companyEditPos] = c;
+                }
+                else
+                {
+                    companyName[companyEditPos] = 'A';
+                }
+            }
+        }
         break;
     case PAGE_MFG_OFFSET:
         if (buttonState & BUT_LEFT_M)
@@ -1357,8 +1576,77 @@ void button_handle(void) {
         }
         break;
     case PAGE_MFG_LIMITS:
+        if (buttonState & BUT_RIGHT_M)
+        {
+            if (!isEditing) {
+                /* Enter edit mode and backup current value */
+                if (subIndex == 0) {
+                    editBackupValue = vMax_dV;
+                } else if (subIndex == 1) {
+                    editBackupValue = iMax_dA;
+                } else {
+                    editBackupValue = tempMax;
+                }
+                isEditing = 1u;
+            } else {
+                /* Exit edit mode */
+                isEditing = 0u;
+            }
+        }
+        if (isEditing) {
+            /* In edit mode: Up/Down adjust values */
+            if (buttonState & BUT_UP_M) {
+                if (subIndex == 0 && vMax_dV < 500) { vMax_dV++; }
+                else if (subIndex == 1 && iMax_dA < 500) { iMax_dA++; }
+                else if (subIndex == 2 && tempMax < 150) { tempMax++; }
+            }
+            if (buttonState & BUT_DOWN_M) {
+                if (subIndex == 0 && vMax_dV > 50) { vMax_dV--; }
+                else if (subIndex == 1 && iMax_dA > 10) { iMax_dA--; }
+                else if (subIndex == 2 && tempMax > 50) { tempMax--; }
+            }
+        } else {
+            /* Not editing: Up/Down navigate menu */
+            if (buttonState & BUT_UP_M) 
+            {
+                subIndex = (uint8_t)((subIndex + 3u - 1u) % 3u);
+            }
+            if (buttonState & BUT_DOWN_M) 
+            {
+                subIndex = (uint8_t)((subIndex + 1u) % 3u);
+            }
+        }
         break;
     case PAGE_MFG_MODE:
+        if (buttonState & BUT_UP_M) 
+        {
+            subIndex = (uint8_t)((subIndex + 3u - 1u) % 3u);
+        }
+        if (buttonState & BUT_DOWN_M) 
+        {
+            subIndex = (uint8_t)((subIndex + 1u) % 3u);
+        }
+        if (buttonState & BUT_RIGHT_M)
+        {
+            /* Save selected device mode and set operating mode accordingly */
+            deviceMode = (uint8_t)(subIndex % 3u);
+            
+            /* Set operating mode based on device mode */
+            if (deviceMode == 0) { /* GUC KAYNAGI */
+                operatingMode = MODE_SUPPLY;
+            } else if (deviceMode == 1) { /* SARJ CIHAZI */
+                operatingMode = MODE_CHARGER;
+            }
+            /* For KULLANICI SECIM (deviceMode == 2), let user choose in settings */
+            
+            /* Reset menuIndex to avoid showing operating mode when it's hidden */
+            if (deviceMode != 2 && menuIndex >= 2) {
+                menuIndex = 0; /* Reset to first menu item */
+            }
+            
+            lcd_menu_set_page(PAGE_MFG_MENU);
+            uiNeedsClear = 1u; buttonState = 0; return;
+        }
         break;
     default:
         break;
@@ -1373,6 +1661,7 @@ void button_handle(void) {
         } else if (pageID == PAGE_MENU) {
             /* Enter selected subpage */
             subIndex = 0;
+            if (deviceMode == 2) { /* KULLANICI SECIM - show all 4 options */
             switch (menuIndex) {
             case 0:
                 lcd_menu_set_page(PAGE_ENTER_DATA);
@@ -1388,6 +1677,21 @@ void button_handle(void) {
                 break;
             default:
                 break;
+                }
+            } else { /* GUC KAYNAGI or SARJ CIHAZI - hide operating mode */
+                switch (menuIndex) {
+                case 0:
+                    lcd_menu_set_page(PAGE_ENTER_DATA);
+                    break;
+                case 1:
+                    lcd_menu_set_page(PAGE_OUTPUT_CONTROL);
+                    break;
+                case 2:
+                    lcd_menu_set_page(PAGE_SETTINGS);
+                    break;
+                default:
+                    break;
+                }
             }
         } else if (pageID == PAGE_ENTER_DATA) {
             /* Immediate toggle for selection fields; edit for numeric */
@@ -1422,7 +1726,7 @@ void button_handle(void) {
             /* Sağ tuş: burada test fonksiyonu çağrılacak */
             /* TODO: buraya test fonksiyonu gelecek */
         } else if (pageID == PAGE_SETTINGS) {
-            /* Language: toggle, Manufacturer: go to PIN page, Brightness: edit */
+            /* Language: toggle, Brightness: edit, Manufacturer: go to PIN page */
             if (subIndex == 0u) {
                 lcd_menu_set_language((uint8_t)(lcdLangId ^ 1u));
             } else if (subIndex == 1u) {
@@ -1472,6 +1776,14 @@ void button_handle(void) {
                 }
             }
         }
+    }
+
+    /* On/Off button handling for output control */
+    if (buttonState & BUT_ON_M) {
+        outputState = 1;
+    }
+    if (buttonState & BUT_OFF_M) {
+        outputState = 0;
     }
 
     uiNeedsClear = 1; /* clear-once after any button handling */

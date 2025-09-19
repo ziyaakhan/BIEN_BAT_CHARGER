@@ -239,7 +239,7 @@ void EXTI2_IRQHandler(void)
     buttonState = s;
     uiNeedsClear = 1; /* UI refresh: clear once in lcd_handle */
     HAL_TIM_Base_Start_IT(&htim7); // IT = interrupt
-	HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
+	//HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
   }
 
   /* USER CODE END EXTI2_IRQn 1 */
@@ -381,7 +381,7 @@ void EXTI15_10_IRQHandler(void)
     buttonState = s;
     uiNeedsClear = 1; /* UI refresh: clear once in lcd_handle */
     HAL_TIM_Base_Start_IT(&htim7); // IT = interrupt
-	HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
+	//HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, 1);
   /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
